@@ -51,59 +51,61 @@ public class GameActivity extends AppCompatActivity {
         button_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_cameraOnClick();
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, 1);
+                }
             }
         });
 
         button_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_mapOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
 
         button_deployUAV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_deployUAVOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
 
         button_uavRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_uavRegionOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
 
         button_proximitySensor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_proximitySensorOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
 
         button_disarmCameras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_disarmCamerasOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
 
         button_incognito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_incognitoOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
 
         button_gpsDecoy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                button_gpsDecoyOnClick();
+                FEATURE_UNAVAILABLE();
             }
         });
-        //TODO - any more onCreate stuff
     }
 
 
@@ -114,56 +116,6 @@ public class GameActivity extends AppCompatActivity {
         //TODO - any stuff related to leaving a game
     }
 
-
-
-    private void button_cameraOnClick() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, 1);
-        }
-    }
-
-
-
-    private void button_mapOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
-
-
-
-    private void button_deployUAVOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
-
-
-
-    private void button_uavRegionOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
-
-
-
-    private void button_proximitySensorOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
-
-
-
-    private void button_disarmCamerasOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
-
-
-
-    private void button_incognitoOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
-
-
-
-    private void button_gpsDecoyOnClick() {
-        FEATURE_UNAVAILABLE();
-    }
 
 
 
