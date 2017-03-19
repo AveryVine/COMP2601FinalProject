@@ -20,7 +20,12 @@ public class Server {
     private EventStreamImpl es;
     private ThreadWithReactor twr;
     private ConcurrentHashMap<String, ThreadWithReactor> clients;
-    private ConcurrentHashMap<String, ConcurrentHashMap<String, ThreadWithReactor>> rooms;
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentHashMap<String, String>>> rooms;
+        /*
+        ConcurrentHashMap1 <RoomNames, ConcurrentHashMap2>
+            ConcurrentHashMap2 <OccupantNames, ConcurrentHashMap3>
+                ConcurrentHashMap3 <AttributeNames, AttributeValues>
+         */
     private int numberOfRooms;
 
 
@@ -68,7 +73,7 @@ public class Server {
                 String roomName = (String) event.get(Fields.ROOM);
                 System.out.println(roomName + ": " + id + " connected");
 
-                rooms.get(roomName).put(id, clients.get(id));
+                rooms.get(roomName).put(id, new ConcurrentHashMap<String, String>());
                 sendRoomOccupantList(roomName);
             }
         });
@@ -103,7 +108,7 @@ public class Server {
 
                 event = new Event("CASH_DEPOSIT");
                 event.put(Fields.BODY, 1000);
-                sendEvent(event, rooms.get(roomName).get(id));
+                sendEvent(event, clients.get(id));
             }
         });
 
@@ -182,14 +187,14 @@ public class Server {
         for (int i = 0; i < numberOfRooms; i++) {
             boolean taken = false;
             int roomNameIndex = random.nextInt(potentialRoomNames.length);
-            for (ConcurrentHashMap.Entry<String, ConcurrentHashMap<String, ThreadWithReactor>> entry : rooms.entrySet()) {
-                if (entry.getKey().equals(potentialRoomNames[roomNameIndex])) {
+            for (String key : rooms.keySet()) {
+                if (key.equals(potentialRoomNames[roomNameIndex])) {
                     taken = true;
                     break;
                 }
             }
             if (!taken)
-                rooms.put(potentialRoomNames[roomNameIndex] + " Room", new ConcurrentHashMap<String, ThreadWithReactor>());
+                rooms.put(potentialRoomNames[roomNameIndex] + " Room", new ConcurrentHashMap<String, ConcurrentHashMap<String, String>>());
         }
     }
 
