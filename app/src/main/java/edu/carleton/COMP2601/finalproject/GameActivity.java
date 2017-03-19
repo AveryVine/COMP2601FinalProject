@@ -25,6 +25,8 @@ public class GameActivity extends AppCompatActivity {
     private Button button_incognito;
     private Button button_gpsDecoy;
 
+    private Client client;
+
     private EventReactor eventReactor;
     private int cash = 0;
 
@@ -35,6 +37,7 @@ public class GameActivity extends AppCompatActivity {
         setTitle("Cash: $0");
         instance = this;
 
+        client = new Client();
         button_camera = (Button) findViewById(R.id.button_camera);
         button_map = (Button) findViewById(R.id.button_map);
         button_deployUAV = (Button) findViewById(R.id.button_deployUAV);
@@ -120,8 +123,8 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void cashDeposit(int deposit) {
-        cash += deposit;
-        setTitle("Cash: $" + cash);
+        client.depositCash(deposit);
+        setTitle("Cash: $" + client.getCash());
     }
 
 
