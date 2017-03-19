@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UTILITY"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:layout_marginTop="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView11"
+        android:layout_below="@+id/textView11"
+        android:layout_marginEnd="38dp" />
+
+    <Button
+        android:id="@+id/button_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView11"
+        android:layout_below="@+id/textView11"
+        android:layout_marginStart="43dp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_camera"
+        android:layout_alignStart="@+id/button_camera"
+        android:layout_below="@+id/button_camera"
+        android:text="Camera"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_map"
+        android:layout_alignStart="@+id/button_map"
+        android:layout_below="@+id/button_map"
+        android:text="Map"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:text="OFFENSE"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:layout_below="@+id/textView14"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button_proximitySensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView16"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button_deployUAV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView16"
+        android:layout_marginStart="27dp" />
+
+    <Button
+        android:id="@+id/button_uavRegion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_proximitySensor"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_deployUAV"
+        android:layout_alignStart="@+id/button_deployUAV"
+        android:layout_below="@+id/button_deployUAV"
+        android:text="Deploy UAV ($200)"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_proximitySensor"
+        android:layout_alignStart="@+id/button_proximitySensor"
+        android:layout_below="@+id/button_proximitySensor"
+        android:text="Proximity Sensor ($200)"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_uavRegion"
+        android:layout_alignStart="@+id/button_uavRegion"
+        android:layout_below="@+id/button_uavRegion"
+        android:text="UAV Region ($100)"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:text="DEFENSE"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:layout_below="@+id/textView18"
+        android:layout_alignStart="@+id/textView16" />
+
+    <Button
+        android:id="@+id/button_incognito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView17"
+        android:layout_below="@+id/textView20" />
+
+    <Button
+        android:id="@+id/button_disarmCameras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView20"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button_gpsDecoy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_uavRegion"
+        android:layout_below="@+id/textView20" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_incognito"
+        android:layout_alignStart="@+id/button_incognito"
+        android:layout_below="@+id/button_incognito"
+        android:text="Incognito ($200)"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView11"
+        android:layout_alignStart="@+id/textView11"
+        android:layout_below="@+id/button_disarmCameras"
+        android:text="Disarm Cameras ($200)"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button_gpsDecoy"
+        android:layout_alignStart="@+id/button_gpsDecoy"
+        android:layout_below="@+id/button_gpsDecoy"
+        android:text="GPS Decoy ($100)"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView_logs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView24"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/textView21"
+        android:layout_below="@+id/space6"
+        android:text="Game has yet to start..."
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView23"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:id="@+id/space6" />
+
+</RelativeLayout>
