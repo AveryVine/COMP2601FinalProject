@@ -2,14 +2,21 @@ package edu.carleton.COMP2601.finalproject;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.Serializable;
 
@@ -17,73 +24,49 @@ import java.io.Serializable;
  * Created by AveryVine on 2017-03-19.
  */
 
-public class Client implements Serializable, LocationListener {
-    private final int PERMISSION_ACCESS_FINE_LOCATION = 0;
+public class Client implements Serializable, ConnectionCallbacks,
+        OnConnectionFailedListener, LocationListener {
+    private final int FINE_LOCATION_PERMISSION_REQUEST = 1;
+    private final int COARSE_LOCATION_PERMISSION_REQUEST = 2;
+
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
 
     private int cash;
-    private LocationManager locationManager;
-    private Location location;
-    private Criteria criteria;
-    private String provider;
 
-    public Client(LocationManager locationManager) {
+    public Client() {
         cash = 0;
-        this.locationManager = locationManager;
-        criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        System.out.println("Provider: " + provider);
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(GameActivity.getInstance())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        locationRequest = new LocationRequest();
     }
 
+    public void onStart() {
+        googleApiClient.connect();
+    }
+
+    public void onStop() {
+        googleApiClient.disconnect();
+    }
+
+    public void onPause() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+    }
+
+    public void onResume() {
+        if (googleApiClient.isConnected())
+            startLocationUpdates();
+    }
 
 
     public Location getCurrentLocation() {
-        System.out.println("Getting current location...");
-        if (provider != null && !provider.equals("")) {
-            System.out.println("Provider found");
-            if (ContextCompat.checkSelfPermission(GameActivity.getInstance().getApplicationContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                System.out.println("Need to request permissions...");
-                ActivityCompat.requestPermissions(GameActivity.getInstance(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                        PERMISSION_ACCESS_FINE_LOCATION);
-            }
-            else {
-                System.out.println("Permissions exist for Fine Location");
-                Location location = locationManager.getLastKnownLocation(provider);
-                locationManager.requestLocationUpdates(provider, 15000, 1, this);
-
-                if (location != null)
-                    onLocationChanged(location);
-                else
-                    Toast.makeText(GameActivity.getInstance().getApplicationContext(), "No Location Provider Found Check Your Code", Toast.LENGTH_SHORT).show();
-            }
-        }
-        System.out.println("Location: " + location);
-        return location;
+        return null;
     }
-
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        this.location = location;
-        Toast.makeText(GameActivity.getInstance().getApplicationContext(), location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
 
 
     public void depositCash(int deposit) {
@@ -93,4 +76,90 @@ public class Client implements Serializable, LocationListener {
     public int getCash() {
         return cash;
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        getLastLocation();
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        System.out.println(connectionResult);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        System.out.println("Location changed");
+        Toast.makeText(GameActivity.getInstance(), "Location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void getLastLocation() {
+        System.out.println("Getting last location");
+        if (ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
+                Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GameActivity.getInstance(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(GameActivity.getInstance(),
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    COARSE_LOCATION_PERMISSION_REQUEST);
+        }
+        else {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if (location != null) {
+                Toast.makeText(GameActivity.getInstance(), "Location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(GameActivity.getInstance(), "Location is null", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void startLocationUpdates() {
+        System.out.println("Starting location updates");
+        if (ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
+                Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GameActivity.getInstance(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(GameActivity.getInstance(),
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    COARSE_LOCATION_PERMISSION_REQUEST);
+        }
+        else {
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        }
+    }
 }
+
+/*
+
+
+if (ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
+                Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GameActivity.getInstance(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    FINE_LOCATION_PERMISSION_REQUEST);
+            ActivityCompat.requestPermissions(GameActivity.getInstance(),
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    COARSE_LOCATION_PERMISSION_REQUEST);
+        }
+        else {
+
+        }
+
+
+
+ */
