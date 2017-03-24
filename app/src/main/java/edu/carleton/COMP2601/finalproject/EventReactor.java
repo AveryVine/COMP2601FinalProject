@@ -19,7 +19,7 @@ public class EventReactor {
 
     public EventReactor() {
         instance = this;
-        address = "172.17.136.174";
+        address = "172.17.156.122";
         port = 7000;
         room = Fields.DEFAULT;
     }
