@@ -67,7 +67,9 @@ public class GameActivity extends AppCompatActivity {
         button_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                client.getCurrentLocation();
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                intent.putExtra("location", client.getCurrentLocation());
+                startActivity(intent);
             }
         });
 
