@@ -57,10 +57,8 @@ public class GameActivity extends AppCompatActivity {
         button_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, 1);
-                }
+                Intent intent = new Intent(getApplicationContext(), MakePhotoActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -146,7 +144,12 @@ public class GameActivity extends AppCompatActivity {
 
     public void cashDeposit(int deposit) {
         client.depositCash(deposit);
-        setTitle("Cash: $" + client.getCash());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Cash: $" + client.getCash());
+            }
+        });
     }
 
 
