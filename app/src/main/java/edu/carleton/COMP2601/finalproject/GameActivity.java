@@ -74,7 +74,10 @@ public class GameActivity extends AppCompatActivity {
         button_deployUAV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FEATURE_UNAVAILABLE();
+                //FEATURE_UNAVAILABLE();
+                Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
+                intent.putExtra("location", client.getCurrentLocation());
+                startActivity(intent);
             }
         });
 
