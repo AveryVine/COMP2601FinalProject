@@ -26,7 +26,7 @@ public class EventReactor {
 
 
 
-    public void connect(String username) {
+    public void connect(final String username) {
         this.username = username;
         try {
             s = new Socket(address, port);
@@ -58,6 +58,7 @@ public class EventReactor {
                         RoomActivity.getInstance().users(listOfUsers);
                     }
                     else if (activity.equals("SendPhotoActivity")){
+                        listOfUsers.remove(username);
                         SendPhotoActivity.getInstance().users(listOfUsers);
                     }
                 }
@@ -86,7 +87,7 @@ public class EventReactor {
 
 
     public void request(Event event) {
-        if (event.type.equals("LOAD_ROOM"))
+        if (event.type.equals("GET_USERS"))
             room = (String) event.get(Fields.BODY);
 
         event.assignEventStream(es);

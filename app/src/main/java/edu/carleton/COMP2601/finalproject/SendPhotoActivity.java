@@ -40,19 +40,27 @@ public class SendPhotoActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
 
         userList = new ArrayList<>();
-        userList.add("Avery");
-        userList.add("Alexei");
+//        userList.add("Avery");
+//        userList.add("Alexei");
         adapter = new ArrayAdapter(this, R.layout.list_component_white_text, userList);
         listView.setAdapter(adapter);
         imageView.setImageBitmap(scaledImage);
 
-        Event event = new Event("LOAD_OPPONENTS");
+        Event event = new Event("GET_USERS");
+        event.put(Fields.ACTIVITY, "SendPhotoActivity");
         eventReactor.request(event);
 
     }
 
     public void users(ArrayList<String> listOfUsers) {
-        
+        userList.clear();
+        userList.addAll(listOfUsers);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public static SendPhotoActivity getInstance() {
