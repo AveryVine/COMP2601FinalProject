@@ -1,5 +1,7 @@
 package edu.carleton.COMP2601.finalproject;
 
+import android.location.Location;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -85,6 +87,26 @@ public class Server {
                     recipients.add(id);
                 }
                 sendRoomOccupantList(roomName, activity, recipients);
+            }
+        });
+        r.register("GET_LOCATION", new EventHandler() {
+            @Override
+            public void handleEvent(Event event) {
+//                String name = (String) event.get(Fields.RECIPIENT);
+//                String id = (String) event.get(Fields.ID);
+//                event = new Event("GET_LOCATION");
+//                event.put(Fields.RECIPIENT, name);
+//                event.put(Fields.ID, id);
+//                System.out.println(name + "'s location requested.");
+                passEventToRecipient(event);
+            }
+        });
+        r.register("SEND_LOCATION", new EventHandler() {
+            @Override
+            public void handleEvent(Event event) {
+                //Location loc = (Location) event.get(Fields.BODY);
+               // event = new Event("SEND_LOCATION");
+                passEventToRecipient(event);
             }
         });
         r.register("LEAVE_ROOM", new EventHandler() {
