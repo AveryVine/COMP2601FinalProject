@@ -3,6 +3,7 @@ package edu.carleton.COMP2601.finalproject;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,15 +67,24 @@ public class Server {
                 clients.remove(id);
             }
         });
-        r.register("LOAD_ROOM", new EventHandler() {
+        r.register("GET_USERS", new EventHandler() {
             @Override
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                String activity = (String) event.get(Fields.ACTIVITY);
                 System.out.println(roomName + ": " + id + " connected");
 
+                Set<String> recipients;
+                if (activity.equals("RoomActivity")) {
+                    recipients = rooms.get(roomName).keySet();
+                }
+                else {
+                    recipients = new HashSet<>();
+                    recipients.add(id);
+                }
                 rooms.get(roomName).put(id, new ConcurrentHashMap<String, String>());
-                sendRoomOccupantList(roomName);
+                sendRoomOccupantList(roomName, activity, recipients);
             }
         });
         r.register("LEAVE_ROOM", new EventHandler() {
@@ -85,7 +95,7 @@ public class Server {
                 System.out.println(roomName + ": " + id + " disconnected");
 
                 rooms.get(roomName).remove(id);
-                sendRoomOccupantList(roomName);
+                sendRoomOccupantList(roomName, "RoomActivity", rooms.get(roomName).keySet());
             }
         });
         r.register("START_GAME_REQUEST", new EventHandler() {
@@ -145,13 +155,14 @@ public class Server {
 
 
 
-    public void sendRoomOccupantList(String roomName) {
-        Event event = new Event("ROOM_OCCUPANT_LIST");
+    public void sendRoomOccupantList(String roomName, String activity, Set<String> recipients) {
+        Event event = new Event("USERS");
         event.put(Fields.ROOM, roomName);
+        event.put(Fields.ACTIVITY, activity);
         ArrayList<String> listOfUsers = new ArrayList<>();
         listOfUsers.addAll(rooms.get(roomName).keySet());
         event.put(Fields.BODY, listOfUsers);
-        broadcastEvent(event, rooms.get(roomName).keySet());
+        broadcastEvent(event, recipients);
     }
 
 

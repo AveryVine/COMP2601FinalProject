@@ -8,6 +8,7 @@ public class Fields {
     public static final String ID = "ID";
     public static final String RECIPIENT = "RECIPIENT";
     public static final String ROOM = "ROOM";
+    public static final String ACTIVITY = "ACTIVITY";
     public static final String TYPE = "TYPE";
     public static final String BODY = "BODY";
     public static final String SEQ_ID = "SEQ_ID";

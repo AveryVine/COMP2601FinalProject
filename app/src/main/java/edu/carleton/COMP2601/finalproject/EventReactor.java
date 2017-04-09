@@ -48,12 +48,18 @@ public class EventReactor {
                     MainActivity.getInstance().roomList(listOfRooms);
                 }
             });
-            twr.register("ROOM_OCCUPANT_LIST", new EventHandler() {
+            twr.register("USERS", new EventHandler() {
                 @Override
                 public void handleEvent(Event event) {
-                    System.out.println("Received ROOM_OCCUPANT_LIST");
+                    System.out.println("Received USERS");
                     ArrayList<String> listOfUsers = (ArrayList<String>) event.get(Fields.BODY);
-                    RoomActivity.getInstance().occupantList(listOfUsers);
+                    String activity = (String) event.get(Fields.ACTIVITY);
+                    if (activity.equals("RoomActivity")) {
+                        RoomActivity.getInstance().users(listOfUsers);
+                    }
+                    else if (activity.equals("SendPhotoActivity")){
+                        SendPhotoActivity.getInstance().users(listOfUsers);
+                    }
                 }
             });
             twr.register("START_GAME", new EventHandler() {

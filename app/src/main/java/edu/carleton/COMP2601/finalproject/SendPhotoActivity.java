@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 public class SendPhotoActivity extends AppCompatActivity {
 
+    private static SendPhotoActivity instance;
+
     private ListView listView;
     private ImageView imageView;
     private ArrayList<String> userList;
@@ -19,11 +21,15 @@ public class SendPhotoActivity extends AppCompatActivity {
     private byte[] bytes;
     private Bitmap image;
     private Bitmap scaledImage;
+    private EventReactor eventReactor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_photo);
+        instance = this;
+
+        eventReactor = EventReactor.getInstance();
         bytes = MakePhotoActivity.getInstance().getImageBytes();
         image = BitmapFactory.decodeByteArray(bytes,  0, bytes.length, null);
 
@@ -36,8 +42,20 @@ public class SendPhotoActivity extends AppCompatActivity {
         userList = new ArrayList<>();
         userList.add("Avery");
         userList.add("Alexei");
-        adapter = new ArrayAdapter(this, R.layout.list_component, userList);
+        adapter = new ArrayAdapter(this, R.layout.list_component_white_text, userList);
         listView.setAdapter(adapter);
         imageView.setImageBitmap(scaledImage);
+
+        Event event = new Event("LOAD_OPPONENTS");
+        eventReactor.request(event);
+
+    }
+
+    public void users(ArrayList<String> listOfUsers) {
+        
+    }
+
+    public static SendPhotoActivity getInstance() {
+        return instance;
     }
 }

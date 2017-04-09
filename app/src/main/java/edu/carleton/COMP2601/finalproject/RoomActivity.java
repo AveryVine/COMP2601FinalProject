@@ -42,7 +42,8 @@ public class RoomActivity extends AppCompatActivity {
 
         eventReactor = EventReactor.getInstance();
 
-        Event event = new Event("LOAD_ROOM");
+        Event event = new Event("GET_USERS");
+        event.put(Fields.ACTIVITY, "RoomActivity");
         event.put(Fields.BODY, room);
         eventReactor.request(event);
 
@@ -78,7 +79,7 @@ public class RoomActivity extends AppCompatActivity {
 
 
 
-    public void occupantList(ArrayList<String> listOfUsers) {
+    public void users(ArrayList<String> listOfUsers) {
         userList.clear();
         userList.addAll(listOfUsers);
         runOnUiThread(new Runnable() {
