@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 /**
  * Created by AveryVine on 2017-03-18.
  */
@@ -155,6 +157,13 @@ public class GameActivity extends AppCompatActivity {
                 setTitle("Cash: $" + client.getCash());
             }
         });
+    }
+
+    public void sendClientLocation(String id) {
+        Event ev = new Event("SEND_LOCATION");
+        ev.put(Fields.BODY, (Serializable) client.getCurrentLocation());
+        ev.put(Fields.RECIPIENT, id);
+        eventReactor.request(ev);
     }
 
     public void photoReceived(String sender, byte[] bytes) {
