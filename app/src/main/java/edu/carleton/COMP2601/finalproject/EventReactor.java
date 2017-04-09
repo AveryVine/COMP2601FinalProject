@@ -87,6 +87,24 @@ public class EventReactor {
                     GameActivity.getInstance().photoReceived(sender, bytes);
                 }
             });
+            twr.register("KILL_CONFIRMED", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                    System.out.println("Received KILL_CONFIRMED");
+                    String sender = (String) event.get(Fields.ID);
+                    byte[] bytes = (byte[]) event.get(Fields.BODY);
+                    GameActivity.getInstance().photoResponseReceived(sender, bytes, true);
+                }
+            });
+            twr.register("TARGET_ESCAPED", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                    System.out.println("Received TARGET_ESCAPED");
+                    String sender = (String) event.get(Fields.ID);
+                    byte[] bytes = (byte[]) event.get(Fields.BODY);
+                    GameActivity.getInstance().photoResponseReceived(sender, bytes, false);
+                }
+            });
             twr.start();
         } catch (Exception e) {
             e.printStackTrace();

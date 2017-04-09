@@ -159,8 +159,16 @@ public class GameActivity extends AppCompatActivity {
 
     public void photoReceived(String sender, byte[] bytes) {
         this.bytes = bytes;
-        Intent intent = new Intent(getApplicationContext(), PhotoConfirmation.class);
+        Intent intent = new Intent(getApplicationContext(), PhotoConfirmationActivity.class);
         intent.putExtra("sender", sender);
+        startActivity(intent);
+    }
+
+    public void photoResponseReceived(String sender, byte[] bytes, boolean success) {
+        this.bytes = bytes;
+        Intent intent = new Intent(getApplicationContext(), PhotoResponseActivity.class);
+        intent.putExtra("sender", sender);
+        intent.putExtra("success", success);
         startActivity(intent);
     }
 

@@ -64,6 +64,7 @@ public class SendPhotoActivity extends AppCompatActivity {
         event.put(Fields.RECIPIENT, user);
         event.put(Fields.BODY, bytes);
         eventReactor.request(event);
+        finish();
     }
 
     public void users(ArrayList<String> listOfUsers) {

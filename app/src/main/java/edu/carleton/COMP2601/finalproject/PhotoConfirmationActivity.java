@@ -11,16 +11,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PhotoConfirmation extends AppCompatActivity {
+public class PhotoConfirmationActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private Button buttonYes;
     private Button buttonNo;
-    private TextView textView;
 
     private String opponent;
     private Bitmap image, scaledImage;
     private byte[] bytes;
+
+    private EventReactor eventReactor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +30,11 @@ public class PhotoConfirmation extends AppCompatActivity {
         opponent = getIntent().getExtras().getString("sender");
         bytes = GameActivity.getInstance().getImageBytes();
         setTitle("Sniped By: " + opponent);
+        eventReactor = EventReactor.getInstance();
 
         imageView = (ImageView) findViewById(R.id.imageView);
         buttonYes = (Button) findViewById(R.id.buttonYes);
         buttonNo = (Button) findViewById(R.id.buttonNo);
-        textView = (TextView) findViewById(R.id.textView);
 
         image = BitmapFactory.decodeByteArray(bytes,  0, bytes.length, null);
 
@@ -45,6 +46,10 @@ public class PhotoConfirmation extends AppCompatActivity {
         buttonYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Event event = new Event("KILL_CONFIRMED");
+                event.put(Fields.RECIPIENT, opponent);
+                event.put(Fields.BODY, bytes);
+                eventReactor.request(event);
                 FEATURE_UNAVAILABLE();
             }
         });
@@ -52,7 +57,11 @@ public class PhotoConfirmation extends AppCompatActivity {
         buttonNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FEATURE_UNAVAILABLE();
+                Event event = new Event("TARGET_ESCAPED");
+                event.put(Fields.RECIPIENT, opponent);
+                event.put(Fields.BODY, bytes);
+                eventReactor.request(event);
+                finish();
             }
         });
     }
