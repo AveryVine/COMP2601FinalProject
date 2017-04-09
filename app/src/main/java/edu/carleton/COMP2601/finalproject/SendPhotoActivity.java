@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,8 +42,6 @@ public class SendPhotoActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
 
         userList = new ArrayList<>();
-//        userList.add("Avery");
-//        userList.add("Alexei");
         adapter = new ArrayAdapter(this, R.layout.list_component_white_text, userList);
         listView.setAdapter(adapter);
         imageView.setImageBitmap(scaledImage);
@@ -50,6 +50,20 @@ public class SendPhotoActivity extends AppCompatActivity {
         event.put(Fields.ACTIVITY, "SendPhotoActivity");
         eventReactor.request(event);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listItemClicked(position);
+            }
+        });
+
+    }
+
+    private void listItemClicked(int position) {
+        String user = userList.get(position);
+        Event event = new Event("PHOTO_EVENT");
+        event.put(Fields.RECIPIENT, user);
+        event.put(Fields.BODY, bytes);
+        eventReactor.request(event);
     }
 
     public void users(ArrayList<String> listOfUsers) {

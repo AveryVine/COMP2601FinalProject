@@ -29,6 +29,8 @@ public class GameActivity extends AppCompatActivity {
     private Button button_incognito;
     private Button button_gpsDecoy;
 
+    private byte[] bytes;
+
     private Client client;
 
     private EventReactor eventReactor;
@@ -153,6 +155,17 @@ public class GameActivity extends AppCompatActivity {
                 setTitle("Cash: $" + client.getCash());
             }
         });
+    }
+
+    public void photoReceived(String sender, byte[] bytes) {
+        this.bytes = bytes;
+        Intent intent = new Intent(getApplicationContext(), PhotoConfirmation.class);
+        intent.putExtra("sender", sender);
+        startActivity(intent);
+    }
+
+    public byte[] getImageBytes() {
+        return bytes;
     }
 
 

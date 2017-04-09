@@ -121,6 +121,17 @@ public class Server {
                 sendEvent(event, clients.get(id));
             }
         });
+        r.register("PHOTO_EVENT", new EventHandler() {
+            @Override
+            public void handleEvent(Event event) {
+                String id = (String) event.get(Fields.ID);
+                String roomName = (String) event.get(Fields.ROOM);
+                String recipient = (String) event.get(Fields.RECIPIENT);
+                System.out.println(roomName + ": " + id + " is sending a photo to " + recipient);
+
+                passEventToRecipient(event);
+            }
+        });
 
         try {
             listener = new ServerSocket(PORT);

@@ -46,25 +46,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (currentLocation != null) {
+            LatLng currLocationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-        LatLng currLocationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//        if (ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
-//                Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(GameActivity.getInstance(),
-//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                    FINE_LOCATION_PERMISSION_REQUEST);
-//            ActivityCompat.requestPermissions(GameActivity.getInstance(),
-//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    COARSE_LOCATION_PERMISSION_REQUEST);
-//        }
-//        else {
-//            mMap.setMyLocationEnabled(true);
-//        }
-
-        mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(currLocationLatLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location"));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(currLocationLatLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        }
     }
 }
