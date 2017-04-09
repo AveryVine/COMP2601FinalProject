@@ -97,6 +97,33 @@ public class EventReactor {
                     GameActivity.getInstance().cashDeposit(cashDeposit);
                 }
             });
+            twr.register("PHOTO_EVENT", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                    System.out.println("Received PHOTO_EVENT");
+                    String sender = (String) event.get(Fields.ID);
+                    byte[] bytes = (byte[]) event.get(Fields.BODY);
+                    GameActivity.getInstance().photoReceived(sender, bytes);
+                }
+            });
+            twr.register("KILL_CONFIRMED", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                    System.out.println("Received KILL_CONFIRMED");
+                    String sender = (String) event.get(Fields.ID);
+                    byte[] bytes = (byte[]) event.get(Fields.BODY);
+                    GameActivity.getInstance().photoResponseReceived(sender, bytes, true);
+                }
+            });
+            twr.register("TARGET_ESCAPED", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                    System.out.println("Received TARGET_ESCAPED");
+                    String sender = (String) event.get(Fields.ID);
+                    byte[] bytes = (byte[]) event.get(Fields.BODY);
+                    GameActivity.getInstance().photoResponseReceived(sender, bytes, false);
+                }
+            });
             twr.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,24 +132,29 @@ public class EventReactor {
 
 
 
-    public void request(Event event) {
-        if (event.type.equals("LOAD_ROOM")) {
-            room = (String) event.get(Fields.BODY);
-            event.type = "GET_USERS";
-        }
+    public void request(final Event event) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (event.type.equals("LOAD_ROOM")) {
+                    room = (String) event.get(Fields.BODY);
+                    event.type = "GET_USERS";
+                }
 
-        event.assignEventStream(es);
-        event.put(Fields.ID, username);
-        event.put(Fields.ROOM, room);
+                event.assignEventStream(es);
+                event.put(Fields.ID, username);
+                event.put(Fields.ROOM, room);
 
-        try {
-            es.putEvent(event);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                try {
+                    es.putEvent(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        if (event.type.equals("LEAVE_ROOM"))
-            room = Fields.DEFAULT;
+                if (event.type.equals("LEAVE_ROOM"))
+                    room = Fields.DEFAULT;
+            }
+        }).start();
     }
 
 
