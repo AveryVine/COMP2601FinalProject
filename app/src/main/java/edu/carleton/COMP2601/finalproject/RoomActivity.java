@@ -42,7 +42,7 @@ public class RoomActivity extends AppCompatActivity {
 
         eventReactor = EventReactor.getInstance();
 
-        Event event = new Event("GET_USERS");
+        Event event = new Event("LOAD_ROOM");
         event.put(Fields.ACTIVITY, "RoomActivity");
         event.put(Fields.BODY, room);
         eventReactor.request(event);

@@ -87,8 +87,10 @@ public class EventReactor {
 
 
     public void request(Event event) {
-        if (event.type.equals("GET_USERS"))
+        if (event.type.equals("LOAD_ROOM")) {
             room = (String) event.get(Fields.BODY);
+            event.type = "GET_USERS";
+        }
 
         event.assignEventStream(es);
         event.put(Fields.ID, username);

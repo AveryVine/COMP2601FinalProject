@@ -78,12 +78,12 @@ public class Server {
                 Set<String> recipients;
                 if (activity.equals("RoomActivity")) {
                     recipients = rooms.get(roomName).keySet();
+                    rooms.get(roomName).put(id, new ConcurrentHashMap<String, String>());
                 }
                 else {
                     recipients = new HashSet<>();
                     recipients.add(id);
                 }
-                rooms.get(roomName).put(id, new ConcurrentHashMap<String, String>());
                 sendRoomOccupantList(roomName, activity, recipients);
             }
         });

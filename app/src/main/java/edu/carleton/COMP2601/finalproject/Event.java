@@ -17,7 +17,7 @@ public class Event implements EventStream, Serializable {
      * sense to share it when serializing the event.
      */
     private static final long serialVersionUID = 1L;
-    public final String type;
+    public String type;
     public transient EventStream es;
     private HashMap<String, Serializable> map;
 
