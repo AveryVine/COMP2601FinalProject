@@ -2,17 +2,28 @@ package edu.carleton.COMP2601.finalproject;
 
 import android.location.Location;
 import android.os.CountDownTimer;
+import android.os.Looper;
+import android.os.Parcel;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DeployUavActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -20,22 +31,28 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
     private Location currentLocation;
-    private ArrayList<String> userArr;
+    private HashMap<String, MarkerOptions> userArr;
+    private EventReactor eventReactor;
+    private String username;
 
-    private final int FINE_LOCATION_PERMISSION_REQUEST = 1;
-    private final int COARSE_LOCATION_PERMISSION_REQUEST = 2;
+    private static int uavCountdown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         instance = this;
+
+        username = getIntent().getExtras().getString("username");
+
+        eventReactor = EventReactor.getInstance();
+        uavCountdown = 6;
         setContentView(R.layout.activity_maps);
+        userArr = new HashMap<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        currentLocation = (Location) getIntent().getExtras().get("location");
     }
 
 
@@ -52,58 +69,83 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng currLocationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//        if (ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
-//                Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(GameActivity.getInstance(),
-//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                    FINE_LOCATION_PERMISSION_REQUEST);
-//            ActivityCompat.requestPermissions(GameActivity.getInstance(),
-//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-//                    COARSE_LOCATION_PERMISSION_REQUEST);
-//        }
-//        else {
-//            mMap.setMyLocationEnabled(true);
-//        }
-
-        mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(currLocationLatLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
         Event ev = new Event("GET_USERS");
-        EventReactor.getInstance().request(ev);
+        ev.put(Fields.ACTIVITY, "DeployUavActivity");
+        eventReactor.request(ev);
     }
 
 
     public void updateUserList(final ArrayList<String> userArr) {
-        this.userArr = userArr;
-        //call a function that will get every players location and
-        //put it on the map
+        for (String user: userArr) {
+            this.userArr.put(user, null);
+        }
         final Event locationEv = new Event("GET_LOCATION");
-        new CountDownTimer(60000, 5000) {
-
-            public void onTick(long millisUntilFinished) {
-                //mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
-                //send get location event
+        System.out.println("Preparing countdown timer");
+        final Timer uavTimer = new Timer();
+        uavTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (uavCountdown == 1) {
+                    uavTimer.cancel();
+                }
+                uavCountdown--;
                 for (String user : userArr) {
+                    System.out.println("Getting location for " + user + " (tick " + uavCountdown + ")");
                     locationEv.put(Fields.RECIPIENT, user);
-                    EventReactor.getInstance().request(locationEv);
+                    eventReactor.request(locationEv);
                 }
             }
-
-            public void onFinish() {
-                //mTextField.setText("done!");
-                System.out.println("UAV finished.");
-            }
-        }.start();
+        }, 0, 5000);
     }
 
 
-    public void showLocation(Location loc) {
-        LatLng currLocationLatLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location"));
+    public void showLocation(byte[] bytes, final String user) {
+        Parcel parcel = Parcel.obtain();
+        parcel.unmarshall(bytes, 0, bytes.length);
+        parcel.setDataPosition(0);
+        Location location = Location.CREATOR.createFromParcel(parcel);
+        if (location != null) {
+            final LatLng currLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    MarkerOptions newMarker;
+                    if (user.equals(username)) {
+                        newMarker = new MarkerOptions().position(currLocationLatLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    }
+                    else {
+                        newMarker = new MarkerOptions().position(currLocationLatLng).title(user);
+                    }
+                    userArr.put(user, newMarker);
+                    mMap.addMarker(newMarker);
+                    System.out.println("Added marker for " + user + ": " + newMarker);
+                }
+            });
+            final LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            boolean cancelBuild = false;
+            for (MarkerOptions marker: userArr.values()) {
+                if (marker == null) {
+                    System.out.println(userArr);
+                    cancelBuild = true;
+                    break;
+                }
+                builder.include(marker.getPosition());
+            }
+            if (!cancelBuild) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                    }
+                });
+            }
+            else {
+                System.out.println("Marker build cancelled");
+            }
+        }
+        else {
+            System.out.println("Received NULL location");
+        }
     }
 
 

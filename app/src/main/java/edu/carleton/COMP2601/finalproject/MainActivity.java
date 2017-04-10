@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         String room = roomList.get(position);
         Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
         intent.putExtra("roomTitle", room);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 

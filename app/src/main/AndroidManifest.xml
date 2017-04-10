@@ -47,6 +47,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".PhotoResponseActivity" android:screenOrientation="portrait" />
         <activity android:name=".PhotoConfirmationActivity" android:screenOrientation="portrait" />
+        <activity android:name=".DeployUavActivity" android:screenOrientation="portrait" />"
     </application>
 
 </manifest>

@@ -63,7 +63,7 @@ public class EventReactor {
                         listOfUsers.remove(username);
                         SendPhotoActivity.getInstance().users(listOfUsers);
                     }
-                    else if (activity.equals("DeployUavActivity")){
+                    else if (activity.equals("DeployUavActivity")) {
                         DeployUavActivity.getInstance().updateUserList(listOfUsers);
                     }
                 }
@@ -75,11 +75,12 @@ public class EventReactor {
                     GameActivity.getInstance().sendClientLocation(id);
                 }
             });
-            twr.register("SENT_LOCATION", new EventHandler() {
+            twr.register("SEND_LOCATION", new EventHandler() {
                 @Override
                 public void handleEvent(Event event) {
-                    Location loc = (Location) event.get(Fields.BODY);
-                    DeployUavActivity.getInstance().showLocation(loc);
+                    String id = (String) event.get(Fields.ID);
+                    byte[] bytes = (byte[]) event.get(Fields.BODY);
+                    DeployUavActivity.getInstance().showLocation(bytes, id);
                 }
             });
             twr.register("START_GAME", new EventHandler() {

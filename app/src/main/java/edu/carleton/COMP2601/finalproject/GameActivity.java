@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
         setTitle("Cash: $0");
         instance = this;
-        client = new Client();
+        client = new Client(getIntent().getExtras().getString("username"));
 
         button_camera = (Button) findViewById(R.id.button_camera);
         button_map = (Button) findViewById(R.id.button_map);
@@ -81,6 +82,7 @@ public class GameActivity extends AppCompatActivity {
                 //FEATURE_UNAVAILABLE();
                 Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
                 intent.putExtra("location", client.getCurrentLocation());
+                intent.putExtra("username", client.getUsername());
                 startActivity(intent);
             }
         });
@@ -88,6 +90,9 @@ public class GameActivity extends AppCompatActivity {
         button_uavRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
+                intent.putExtra("username", client.getUsername());
+                startActivity(intent);
                 FEATURE_UNAVAILABLE();
             }
         });
@@ -161,9 +166,13 @@ public class GameActivity extends AppCompatActivity {
 
     public void sendClientLocation(String id) {
         Event ev = new Event("SEND_LOCATION");
-        ev.put(Fields.BODY, (Serializable) client.getCurrentLocation());
+        Parcel p = Parcel.obtain();
+        client.getCurrentLocation().writeToParcel(p, 0);
+        final byte[] b = p.marshall();
+        ev.put(Fields.BODY, b);
         ev.put(Fields.RECIPIENT, id);
         eventReactor.request(ev);
+        p.recycle();
     }
 
     public void photoReceived(String sender, byte[] bytes) {

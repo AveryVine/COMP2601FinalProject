@@ -24,13 +24,14 @@ public class RoomActivity extends AppCompatActivity {
     private ArrayList<String> userList;
     private ArrayAdapter adapter;
     private EventReactor eventReactor;
-    private String room;
+    private String room, username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         room = getIntent().getExtras().getString("roomTitle");
+        username = getIntent().getExtras().getString("username");
         setTitle(room);
         instance = this;
 
@@ -94,6 +95,7 @@ public class RoomActivity extends AppCompatActivity {
 
     public void startGame() {
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 

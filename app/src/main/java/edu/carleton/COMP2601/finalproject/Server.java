@@ -1,7 +1,5 @@
 package edu.carleton.COMP2601.finalproject;
 
-import android.location.Location;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class Server {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
                 String activity = (String) event.get(Fields.ACTIVITY);
-                System.out.println(roomName + ": " + id + " connected");
+                System.out.println(roomName + ": " + id + " requested users");
 
                 Set<String> recipients;
                 if (activity.equals("RoomActivity")) {
@@ -92,20 +90,22 @@ public class Server {
         r.register("GET_LOCATION", new EventHandler() {
             @Override
             public void handleEvent(Event event) {
-//                String name = (String) event.get(Fields.RECIPIENT);
-//                String id = (String) event.get(Fields.ID);
-//                event = new Event("GET_LOCATION");
-//                event.put(Fields.RECIPIENT, name);
-//                event.put(Fields.ID, id);
-//                System.out.println(name + "'s location requested.");
+                String id = (String) event.get(Fields.ID);
+                String roomName = (String) event.get(Fields.ROOM);
+                String recipient = (String) event.get(Fields.RECIPIENT);
+
+                System.out.println(roomName + ": " + id + " requested location information from " + recipient);
                 passEventToRecipient(event);
             }
         });
         r.register("SEND_LOCATION", new EventHandler() {
             @Override
             public void handleEvent(Event event) {
-                //Location loc = (Location) event.get(Fields.BODY);
-               // event = new Event("SEND_LOCATION");
+                String id = (String) event.get(Fields.ID);
+                String roomName = (String) event.get(Fields.ROOM);
+                String recipient = (String) event.get(Fields.RECIPIENT);
+
+                System.out.println(roomName + ": " + id + " is sending location information to " + recipient);
                 passEventToRecipient(event);
             }
         });

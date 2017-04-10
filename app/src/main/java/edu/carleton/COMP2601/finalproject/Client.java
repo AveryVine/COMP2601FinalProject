@@ -32,9 +32,11 @@ public class Client implements Serializable, ConnectionCallbacks,
     private LocationRequest locationRequest;
 
     private int cash;
+    private String username;
 
-    public Client() {
+    public Client(String username) {
         cash = 0;
+        this.username = username;
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(GameActivity.getInstance())
                     .addConnectionCallbacks(this)
@@ -79,12 +81,7 @@ public class Client implements Serializable, ConnectionCallbacks,
         }
         else {
             location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (location != null) {
-                Toast.makeText(GameActivity.getInstance(), "Location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(GameActivity.getInstance(), "Location is null", Toast.LENGTH_SHORT).show();
-            }
+            System.out.println(location);
         }
         return location;
     }
@@ -96,6 +93,10 @@ public class Client implements Serializable, ConnectionCallbacks,
 
     public int getCash() {
         return cash;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     @Override
