@@ -130,25 +130,29 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        System.out.println("onStart");
         client.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        client.onStop();
+        System.out.println("onStop");
+//        client.onStop();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        System.out.println("onPause");
 //        client.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        client.onResume();
+        System.out.println("onResume");
+//        client.onResume();
     }
 
 

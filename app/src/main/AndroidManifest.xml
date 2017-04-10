@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RoomActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".GameActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".GameActivity" android:screenOrientation="portrait" android:persistent="true"/>
         <activity android:name=".MakePhotoActivity" android:screenOrientation="portrait"/>
         <activity android:name=".SendPhotoActivity" android:screenOrientation="portrait"/>
         <!--
