@@ -3,6 +3,7 @@ package edu.carleton.COMP2601.finalproject;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.provider.MediaStore;
@@ -79,7 +80,6 @@ public class GameActivity extends AppCompatActivity {
         button_deployUAV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //FEATURE_UNAVAILABLE();
                 Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
                 intent.putExtra("location", client.getCurrentLocation());
                 intent.putExtra("username", client.getUsername());
@@ -90,9 +90,9 @@ public class GameActivity extends AppCompatActivity {
         button_uavRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
-                intent.putExtra("username", client.getUsername());
-                startActivity(intent);
+//                Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
+//                intent.putExtra("username", client.getUsername());
+//                startActivity(intent);
                 FEATURE_UNAVAILABLE();
             }
         });
@@ -164,10 +164,14 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    public Location getClientLocation() {
+        return client.getCurrentLocation();
+    }
+
     public void sendClientLocation(String id) {
         Event ev = new Event("SEND_LOCATION");
         Parcel p = Parcel.obtain();
-        client.getCurrentLocation().writeToParcel(p, 0);
+        getClientLocation().writeToParcel(p, 0);
         final byte[] b = p.marshall();
         ev.put(Fields.BODY, b);
         ev.put(Fields.RECIPIENT, id);

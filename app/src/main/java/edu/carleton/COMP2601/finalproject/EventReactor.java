@@ -134,6 +134,7 @@ public class EventReactor {
 
 
     public void request(final Event event) {
+        System.out.println("New request");
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -30,8 +30,7 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
     private static DeployUavActivity instance;
 
     private GoogleMap mMap;
-    private Location currentLocation;
-    private HashMap<String, MarkerOptions> userArr;
+    private HashMap<String, MarkerOptions> userMap;
     private EventReactor eventReactor;
     private String username;
 
@@ -48,7 +47,7 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         eventReactor = EventReactor.getInstance();
         uavCountdown = 6;
         setContentView(R.layout.activity_maps);
-        userArr = new HashMap<>();
+        userMap = new HashMap<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -77,10 +76,9 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
 
     public void updateUserList(final ArrayList<String> userArr) {
         for (String user: userArr) {
-            this.userArr.put(user, null);
+            userMap.put(user, null);
         }
-        final Event locationEv = new Event("GET_LOCATION");
-        System.out.println("Preparing countdown timer");
+        final Event event = new Event("GET_LOCATION");
         final Timer uavTimer = new Timer();
         uavTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -89,10 +87,26 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
                     uavTimer.cancel();
                 }
                 uavCountdown--;
+                Location location = GameActivity.getInstance().getClientLocation();
+                if (location != null) {
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    final MarkerOptions newMarker = new MarkerOptions().position(latLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    userMap.put(username, newMarker);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMap.addMarker(newMarker);
+                            System.out.println("Added marker for " + username + ": " + newMarker);
+                        }
+                    });
+                }
+
                 for (String user : userArr) {
-                    System.out.println("Getting location for " + user + " (tick " + uavCountdown + ")");
-                    locationEv.put(Fields.RECIPIENT, user);
-                    eventReactor.request(locationEv);
+                    if (!user.equals(username)) {
+                        System.out.println("Getting location for " + user + " (tick " + uavCountdown + ")");
+                        event.put(Fields.RECIPIENT, user);
+                        eventReactor.request(event);
+                    }
                 }
             }
         }, 0, 5000);
@@ -106,26 +120,20 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         Location location = Location.CREATOR.createFromParcel(parcel);
         if (location != null) {
             final LatLng currLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            final MarkerOptions newMarker = new MarkerOptions().position(currLocationLatLng).title(user);
+            userMap.put(user, newMarker);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MarkerOptions newMarker;
-                    if (user.equals(username)) {
-                        newMarker = new MarkerOptions().position(currLocationLatLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    }
-                    else {
-                        newMarker = new MarkerOptions().position(currLocationLatLng).title(user);
-                    }
-                    userArr.put(user, newMarker);
                     mMap.addMarker(newMarker);
                     System.out.println("Added marker for " + user + ": " + newMarker);
                 }
             });
             final LatLngBounds.Builder builder = new LatLngBounds.Builder();
             boolean cancelBuild = false;
-            for (MarkerOptions marker: userArr.values()) {
+            for (MarkerOptions marker: userMap.values()) {
                 if (marker == null) {
-                    System.out.println(userArr);
+                    System.out.println(userMap);
                     cancelBuild = true;
                     break;
                 }
