@@ -181,6 +181,7 @@
         android:layout_alignStart="@+id/textView21"
         android:layout_below="@+id/space6"
         android:text="Game has yet to start..."
+        android:gravity="bottom"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 

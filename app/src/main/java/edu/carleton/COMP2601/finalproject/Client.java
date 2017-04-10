@@ -86,6 +86,16 @@ public class Client implements Serializable, ConnectionCallbacks,
         return location;
     }
 
+    public boolean purchase(String message, int purchase) {
+        if (cash - purchase < 0) {
+            GameActivity.getInstance().logs.append("\nNot enough cash");
+            return false;
+        }
+        cash -= purchase;
+        GameActivity.getInstance().logs.append("\n" + message + " (-$" + purchase + ")");
+        return true;
+    }
+
 
     public void depositCash(int deposit) {
         cash += deposit;

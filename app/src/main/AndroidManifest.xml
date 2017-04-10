@@ -18,17 +18,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".MainActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RoomActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".GameActivity" android:screenOrientation="portrait" android:persistent="true"/>
-        <activity android:name=".MakePhotoActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SendPhotoActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".RoomActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MakePhotoActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SendPhotoActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -44,10 +59,24 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
+            android:persistent="true"
             android:screenOrientation="portrait" />
-        <activity android:name=".PhotoResponseActivity" android:screenOrientation="portrait" />
-        <activity android:name=".PhotoConfirmationActivity" android:screenOrientation="portrait" />
-        <activity android:name=".DeployUavActivity" android:screenOrientation="portrait" />"
+        <activity
+            android:name=".PhotoResponseActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PhotoConfirmationActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DeployUavActivity"
+            android:persistent="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UavRegionActivity"
+            android:persistent="true"
+            android:label="@string/title_activity_uav_region"></activity>
     </application>
 
 </manifest>

@@ -6,4 +6,5 @@
     <string name="roomActivity_unableToStartGame_alert">There\'s not enough players in this room to start a game!</string>
     <string name="FEATURE_UNAVAILABLE_ALERT">Woah there cowboy! That feature\'s not implemented yet!</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_uav_region">Map</string>
 </resources>

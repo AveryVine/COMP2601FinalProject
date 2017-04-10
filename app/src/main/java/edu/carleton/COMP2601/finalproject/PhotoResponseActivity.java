@@ -29,9 +29,11 @@ public class PhotoResponseActivity extends AppCompatActivity {
 
         if (success) {
             setTitle("Kill Confirmed: " + opponent);
+            GameActivity.getInstance().logs.append("\nKill Confirmed: " + opponent);
         }
         else {
             setTitle("Target Escaped: " + opponent);
+            GameActivity.getInstance().logs.append("\nTarget Escaped: " + opponent);
             imageView.setImageAlpha(100);
             xImageView.setImageAlpha(0);
         }

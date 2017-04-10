@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Serializable;
@@ -32,6 +33,8 @@ public class GameActivity extends AppCompatActivity {
     private Button button_disarmCameras;
     private Button button_incognito;
     private Button button_gpsDecoy;
+
+    TextView logs;
 
     private byte[] bytes;
 
@@ -55,6 +58,9 @@ public class GameActivity extends AppCompatActivity {
         button_disarmCameras = (Button) findViewById(R.id.button_disarmCameras);
         button_incognito = (Button) findViewById(R.id.button_incognito);
         button_gpsDecoy = (Button) findViewById(R.id.button_gpsDecoy);
+        logs = (TextView) findViewById(R.id.textView_logs);
+
+        logs.setText("Game has begun");
 
         eventReactor = EventReactor.getInstance();
         Event event = new Event("CONNECTED_TO_GAME");
@@ -80,20 +86,30 @@ public class GameActivity extends AppCompatActivity {
         button_deployUAV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
-                intent.putExtra("location", client.getCurrentLocation());
-                intent.putExtra("username", client.getUsername());
-                startActivity(intent);
+                boolean completePurchase = true;
+                if (DeployUavActivity.getInstance() != null) {
+                    if (DeployUavActivity.getInstance().getUavCountdown() == 0) {
+                        completePurchase = client.purchase("Deployed UAV", 200);
+                    }
+                }
+                else {
+                    completePurchase = client.purchase("Deployed UAV", 200);
+                }
+                if (completePurchase) {
+                    updateCashTitle();
+                    Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
+                    intent.putExtra("username", client.getUsername());
+                    startActivity(intent);
+                }
             }
         });
 
         button_uavRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
-//                intent.putExtra("username", client.getUsername());
-//                startActivity(intent);
-                FEATURE_UNAVAILABLE();
+                Intent intent = new Intent(getApplicationContext(), UavRegionActivity.class);
+                intent.putExtra("username", client.getUsername());
+                startActivity(intent);
             }
         });
 
@@ -160,6 +176,10 @@ public class GameActivity extends AppCompatActivity {
 
     public void cashDeposit(int deposit) {
         client.depositCash(deposit);
+        updateCashTitle();
+    }
+
+    public void updateCashTitle() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -172,14 +192,15 @@ public class GameActivity extends AppCompatActivity {
         return client.getCurrentLocation();
     }
 
-    public void sendClientLocation(String id) {
-        Event ev = new Event("SEND_LOCATION");
+    public void sendClientLocation(String id, String activity) {
+        Event event = new Event("SEND_LOCATION");
+        event.put(Fields.ACTIVITY, activity);
         Parcel p = Parcel.obtain();
         getClientLocation().writeToParcel(p, 0);
         final byte[] b = p.marshall();
-        ev.put(Fields.BODY, b);
-        ev.put(Fields.RECIPIENT, id);
-        eventReactor.request(ev);
+        event.put(Fields.BODY, b);
+        event.put(Fields.RECIPIENT, id);
+        eventReactor.request(event);
         p.recycle();
     }
 

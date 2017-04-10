@@ -66,13 +66,17 @@ public class EventReactor {
                     else if (activity.equals("DeployUavActivity")) {
                         DeployUavActivity.getInstance().updateUserList(listOfUsers);
                     }
+                    else if (activity.equals("UavRegionActivity")) {
+                        UavRegionActivity.getInstance().updateUserList(listOfUsers);
+                    }
                 }
             });
             twr.register("GET_LOCATION", new EventHandler() {
                 @Override
                 public void handleEvent(Event event) {
                     String id = (String) event.get(Fields.ID);
-                    GameActivity.getInstance().sendClientLocation(id);
+                    String activity = (String) event.get(Fields.ACTIVITY);
+                    GameActivity.getInstance().sendClientLocation(id, activity);
                 }
             });
             twr.register("SEND_LOCATION", new EventHandler() {
@@ -80,7 +84,13 @@ public class EventReactor {
                 public void handleEvent(Event event) {
                     String id = (String) event.get(Fields.ID);
                     byte[] bytes = (byte[]) event.get(Fields.BODY);
-                    DeployUavActivity.getInstance().showLocation(bytes, id);
+                    String activity = (String) event.get(Fields.ACTIVITY);
+                    if (activity.equals("DeployUavActivity")) {
+                        DeployUavActivity.getInstance().showLocation(bytes, id);
+                    }
+                    else if (activity.equals("UavRegionActivity")) {
+                        UavRegionActivity.getInstance().showLocation(bytes, id);
+                    }
                 }
             });
             twr.register("START_GAME", new EventHandler() {
@@ -134,7 +144,6 @@ public class EventReactor {
 
 
     public void request(final Event event) {
-        System.out.println("New request");
         new Thread(new Runnable() {
             @Override
             public void run() {
