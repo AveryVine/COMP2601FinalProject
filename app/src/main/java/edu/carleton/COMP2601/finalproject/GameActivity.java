@@ -89,11 +89,11 @@ public class GameActivity extends AppCompatActivity {
                 boolean completePurchase = true;
                 if (DeployUavActivity.getInstance() != null) {
                     if (DeployUavActivity.getInstance().getUavCountdown() == 0) {
-                        completePurchase = client.purchase("Deployed UAV", 200);
+                        completePurchase = client.purchase("Deployed UAV", 400);
                     }
                 }
                 else {
-                    completePurchase = client.purchase("Deployed UAV", 200);
+                    completePurchase = client.purchase("Deployed UAV", 400);
                 }
                 if (completePurchase) {
                     updateCashTitle();
@@ -107,9 +107,21 @@ public class GameActivity extends AppCompatActivity {
         button_uavRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), UavRegionActivity.class);
-                intent.putExtra("username", client.getUsername());
-                startActivity(intent);
+                boolean completePurchase = true;
+                if (UavRegionActivity.getInstance() != null) {
+                    if (UavRegionActivity.getInstance().getUavCountdown() == 0) {
+                        completePurchase = client.purchase("Deployed UAV Region", 200);
+                    }
+                }
+                else {
+                    completePurchase = client.purchase("Deployed UAV Region", 200);
+                }
+                if (completePurchase) {
+                    updateCashTitle();
+                    Intent intent = new Intent(getApplicationContext(), UavRegionActivity.class);
+                    intent.putExtra("username", client.getUsername());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -174,9 +186,15 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-    public void cashDeposit(int deposit) {
+    public void cashDeposit(final int deposit) {
         client.depositCash(deposit);
         updateCashTitle();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                logs.append("\nReceived deposit: $" + deposit);
+            }
+        });
     }
 
     public void updateCashTitle() {

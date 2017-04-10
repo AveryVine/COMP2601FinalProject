@@ -78,7 +78,7 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         final Event event = new Event("GET_LOCATION");
         event.put(Fields.ACTIVITY, "DeployUavActivity");
         if (uavCountdown == 0) {
-            uavCountdown = 6;
+            uavCountdown = 20;
             uavTimer = new Timer();
             uavTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -121,7 +121,7 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
                         }
                     }
                 }
-            }, 0, 5000);
+            }, 0, 3000);
         }
         else {
             zoomCamera();

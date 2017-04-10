@@ -88,7 +88,7 @@
         android:layout_alignEnd="@+id/button_deployUAV"
         android:layout_alignStart="@+id/button_deployUAV"
         android:layout_below="@+id/button_deployUAV"
-        android:text="Deploy UAV ($200)"
+        android:text="Deploy UAV ($400)"
         android:textAlignment="center" />
 
     <TextView
@@ -108,7 +108,7 @@
         android:layout_alignEnd="@+id/button_uavRegion"
         android:layout_alignStart="@+id/button_uavRegion"
         android:layout_below="@+id/button_uavRegion"
-        android:text="UAV Region ($100)"
+        android:text="UAV Region ($200)"
         android:textAlignment="center" />
 
     <TextView
