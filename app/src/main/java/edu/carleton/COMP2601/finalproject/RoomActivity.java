@@ -108,6 +108,18 @@ public class RoomActivity extends AppCompatActivity {
             setResult(-1,returnIntent);
             finish();
         }
+        if (resultCode == 0) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(0,returnIntent);
+            finish();
+        }
+        if (resultCode == 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(2, returnIntent);
+            finish();
+        }
     }
 
 

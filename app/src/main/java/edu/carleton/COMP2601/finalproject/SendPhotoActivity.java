@@ -67,6 +67,12 @@ public class SendPhotoActivity extends AppCompatActivity {
             setResult(-1,returnIntent);
             finish();
         }
+        if (resultCode == 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", 2);
+            setResult(2, returnIntent);
+            finish();
+        }
     }
 
     private void listItemClicked(int position) {
@@ -76,7 +82,7 @@ public class SendPhotoActivity extends AppCompatActivity {
         event.put(Fields.RECIPIENT, user);
         event.put(Fields.BODY, bytes);
         eventReactor.request(event);
-//        finish();
+        finish();
     }
 
     public void users(ArrayList<String> listOfUsers) {

@@ -54,9 +54,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        connectedResponse();
         if(resultCode == -1) {
             gameOver();
         }
+        if (resultCode == 2) {
+            youWin();
+        }
+    }
+
+    private void youWin() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.mainActivity_youWin_alert);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (username.equals("")) {
+                    //TODO - enter a valid username?
+                    System.exit(0);
+                }
+            }
+        });
+        builder.show();
     }
 
     private void gameOver() {
@@ -69,12 +88,6 @@ public class MainActivity extends AppCompatActivity {
                     //TODO - enter a valid username?
                     System.exit(0);
                 }
-                connectToServer();
-                roomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        listItemClicked(position);
-                    }
-                });
             }
         });
         builder.show();
@@ -135,12 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void connectedResponse() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, R.string.mainActivity_connect_toast, Toast.LENGTH_SHORT).show();
-            }
-        });
+        Event event = new Event("GET_ROOMS");
+        eventReactor.request(event);
     }
 
 

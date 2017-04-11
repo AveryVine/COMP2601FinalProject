@@ -69,6 +69,9 @@ public class EventReactor {
                     else if (activity.equals("UavRegionActivity")) {
                         UavRegionActivity.getInstance().updateUserList(listOfUsers);
                     }
+                    else if (activity.equals("PhotoResponseActivity")) {
+                        PhotoResponseActivity.getInstance().users(listOfUsers);
+                    }
                 }
             });
             twr.register("GET_LOCATION", new EventHandler() {
@@ -144,9 +147,9 @@ public class EventReactor {
 
 
     public void request(final Event event) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
                 if (event.type.equals("LOAD_ROOM")) {
                     room = (String) event.get(Fields.BODY);
                     event.type = "GET_USERS";
@@ -165,8 +168,8 @@ public class EventReactor {
 
                 if (event.type.equals("LEAVE_ROOM"))
                     room = Fields.DEFAULT;
-//            }
-//        }).start();
+            }
+        }).start();
     }
 
 

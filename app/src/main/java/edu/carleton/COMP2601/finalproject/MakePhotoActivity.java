@@ -50,7 +50,7 @@ import java.util.List;
 
 
 public class MakePhotoActivity extends Activity {
-//    private static final String TAG = "AndroidCameraApi";
+    private static final String TAG = "AndroidCameraApi";
     private static MakePhotoActivity instance;
     private byte[] bytes;
     private Button takePictureButton;
@@ -114,7 +114,7 @@ public class MakePhotoActivity extends Activity {
         @Override
         public void onOpened(CameraDevice camera) {
             //This is called when the camera is open
-//            Log.e(TAG, "onOpened");
+            Log.e(TAG, "onOpened");
             cameraDevice = camera;
             createCameraPreview();
         }
@@ -153,7 +153,7 @@ public class MakePhotoActivity extends Activity {
     }
     protected void takePicture() {
         if(null == cameraDevice) {
-//            Log.e(TAG, "cameraDevice is null");
+            Log.e(TAG, "cameraDevice is null");
             return;
         }
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -270,7 +270,7 @@ public class MakePhotoActivity extends Activity {
     }
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-//        Log.e(TAG, "is camera open");
+        Log.e(TAG, "is camera open");
         try {
             cameraId = manager.getCameraIdList()[0];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -286,11 +286,11 @@ public class MakePhotoActivity extends Activity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-//        Log.e(TAG, "openCamera X");
+        Log.e(TAG, "openCamera X");
     }
     protected void updatePreview() {
         if(null == cameraDevice) {
-//            Log.e(TAG, "updatePreview error, return");
+            Log.e(TAG, "updatePreview error, return");
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         try {
@@ -322,7 +322,7 @@ public class MakePhotoActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-//        Log.e(TAG, "onResume");
+        Log.e(TAG, "onResume");
         startBackgroundThread();
         if (textureView.isAvailable()) {
             openCamera();
@@ -332,7 +332,7 @@ public class MakePhotoActivity extends Activity {
     }
     @Override
     protected void onPause() {
-//        Log.e(TAG, "onPause");
+        Log.e(TAG, "onPause");
         //closeCamera();
         stopBackgroundThread();
         super.onPause();
@@ -344,6 +344,12 @@ public class MakePhotoActivity extends Activity {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("result", resultCode);
             setResult(-1,returnIntent);
+            finish();
+        }
+        if (resultCode == 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(2, returnIntent);
             finish();
         }
     }

@@ -57,7 +57,6 @@ public class Server {
 
                 event = new Event("CONNECTED_RESPONSE");
                 sendEvent(event, clients.get(id));
-                sendRoomList();
             }
         });
         r.register("DISCONNECT_REQUEST", new EventHandler() {
@@ -89,6 +88,12 @@ public class Server {
                     recipients.add(id);
                 }
                 sendRoomOccupantList(roomName, activity, recipients);
+            }
+        });
+        r.register("GET_ROOMS", new EventHandler() {
+            @Override
+            public void handleEvent(Event event) {
+                sendRoomList();
             }
         });
         r.register("GET_LOCATION", new EventHandler() {
@@ -123,6 +128,12 @@ public class Server {
                 System.out.println(roomName + ": " + id + " disconnected");
 
                 rooms.get(roomName).remove(id);
+                if (rooms.get(roomName).size() < 2 && disabledRooms.contains(roomName)) {
+                    event = new Event("YOU_WIN");
+                    disabledRooms.remove(roomName);
+                    broadcastEvent(event, rooms.get(roomName).keySet());
+                    sendRoomList();
+                }
                 sendRoomOccupantList(roomName, "RoomActivity", rooms.get(roomName).keySet());
             }
         });
@@ -218,9 +229,11 @@ public class Server {
         Event event = new Event("ROOM_LIST");
         ArrayList<String> listOfRooms = new ArrayList<>();
         listOfRooms.addAll(rooms.keySet());
+        System.out.println("Disabled: " + disabledRooms);
         for (String disabledRoom: disabledRooms) {
             listOfRooms.remove(disabledRoom);
         }
+        System.out.println("Final: " + listOfRooms);
         event.put(Fields.BODY, listOfRooms);
         broadcastEvent(event, clients.keySet());
     }

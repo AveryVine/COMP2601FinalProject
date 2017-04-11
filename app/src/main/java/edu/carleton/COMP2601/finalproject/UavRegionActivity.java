@@ -147,6 +147,12 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
             setResult(-1,returnIntent);
             finish();
         }
+        if (resultCode == 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(2, returnIntent);
+            finish();
+        }
     }
 
     public void zoomCamera() {

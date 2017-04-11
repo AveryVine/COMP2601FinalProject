@@ -72,8 +72,13 @@ public class GameActivity extends AppCompatActivity {
         button_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MakePhotoActivity.class);
-                startActivityForResult(intent, 1);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(getApplicationContext(), MakePhotoActivity.class);
+                        startActivityForResult(intent, 1);
+                    }
+                }).start();
             }
         });
 
@@ -192,6 +197,12 @@ public class GameActivity extends AppCompatActivity {
             Intent returnIntent = new Intent();
             returnIntent.putExtra("result", resultCode);
             setResult(-1,returnIntent);
+            finish();
+        }
+        if (resultCode == 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(2, returnIntent);
             finish();
         }
     }

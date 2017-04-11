@@ -8,11 +8,17 @@ import android.os.Bundle;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 public class PhotoResponseActivity extends AppCompatActivity {
 
     private ImageView imageView, xImageView;
     private Bitmap image, scaledImage;
     private byte[] bytes;
+
+    private EventReactor eventReactor;
+
+    private static PhotoResponseActivity instance;
 
     private String opponent;
     private boolean success;
@@ -21,9 +27,12 @@ public class PhotoResponseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_response);
+        instance = this;
         opponent = getIntent().getExtras().getString("sender");
         success = getIntent().getExtras().getBoolean("success");
         bytes = GameActivity.getInstance().getImageBytes();
+
+        eventReactor = EventReactor.getInstance();
 
         imageView = (ImageView) findViewById(R.id.imageView);
         xImageView = (ImageView) findViewById(R.id.xImageView);
@@ -31,6 +40,9 @@ public class PhotoResponseActivity extends AppCompatActivity {
         if (success) {
             setTitle("Kill Confirmed: " + opponent);
             GameActivity.getInstance().logs.append("\nKill Confirmed: " + opponent);
+            Event event = new Event("GET_USERS");
+            event.put(Fields.ACTIVITY, "PhotoResponseActivity");
+            eventReactor.request(event);
         }
         else {
             setTitle("Target Escaped: " + opponent);
@@ -55,5 +67,24 @@ public class PhotoResponseActivity extends AppCompatActivity {
             setResult(-1,returnIntent);
             finish();
         }
+        if (resultCode == 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(2, returnIntent);
+            finish();
+        }
+    }
+
+    public void users(ArrayList<String> userList) {
+        if (userList.size() < 2) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", 2);
+            setResult(2, returnIntent);
+            System.out.println("The game will end");
+        }
+    }
+
+    public static PhotoResponseActivity getInstance() {
+        return instance;
     }
 }
