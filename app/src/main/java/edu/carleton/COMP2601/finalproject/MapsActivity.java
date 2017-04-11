@@ -1,9 +1,6 @@
 package edu.carleton.COMP2601.finalproject;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -11,16 +8,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private Location currentLocation;
-
-    private final int FINE_LOCATION_PERMISSION_REQUEST = 1;
-    private final int COARSE_LOCATION_PERMISSION_REQUEST = 2;
+    private Timer mapTimer;
+    private Marker currentMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        currentLocation = (Location) getIntent().getExtras().get("location");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapTimer.cancel();
     }
 
 
@@ -46,11 +51,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Location currentLocation = GameActivity.getInstance().getClientLocation();
         if (currentLocation != null) {
             LatLng currLocationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 
-            mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location"));
+            currentMarker = mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location"));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocationLatLng, 18));
+
+            mapTimer = new Timer();
+            mapTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            currentMarker.remove();
+                            Location currentLocation = GameActivity.getInstance().getClientLocation();
+                            LatLng currLocationLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            currentMarker = mMap.addMarker(new MarkerOptions().position(currLocationLatLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        }
+                    });
+                }
+            }, 3000, 3000);
         }
     }
 }

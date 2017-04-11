@@ -33,6 +33,7 @@ public class Client implements Serializable, ConnectionCallbacks,
 
     private int cash;
     private String username;
+    private Location location;
 
     public Client(String username) {
         cash = 0;
@@ -45,6 +46,9 @@ public class Client implements Serializable, ConnectionCallbacks,
                     .build();
         }
         locationRequest = new LocationRequest();
+        locationRequest.setInterval(3000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     public void onStart() {
@@ -67,7 +71,6 @@ public class Client implements Serializable, ConnectionCallbacks,
 
     public Location getCurrentLocation() {
         System.out.println("Getting last known location");
-        Location location = null;
         if (ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
                 Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(GameActivity.getInstance(),
@@ -81,7 +84,7 @@ public class Client implements Serializable, ConnectionCallbacks,
         }
         else {
             location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            System.out.println(location);
+            System.out.println("CurrentLocation: " + location);
         }
         return location;
     }
@@ -127,8 +130,8 @@ public class Client implements Serializable, ConnectionCallbacks,
 
     @Override
     public void onLocationChanged(Location location) {
-        System.out.println("Location changed");
-        Toast.makeText(GameActivity.getInstance(), "Location: " + location.getLatitude() + ", " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+        System.out.println("LocationChanged: " + location);
+        this.location = location;
     }
 
     public void startLocationUpdates() {
@@ -145,6 +148,7 @@ public class Client implements Serializable, ConnectionCallbacks,
                     COARSE_LOCATION_PERMISSION_REQUEST);
         }
         else {
+            System.out.println("All permission accepted");
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         }
     }

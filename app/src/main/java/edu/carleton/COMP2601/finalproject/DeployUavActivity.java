@@ -25,18 +25,20 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
     private static DeployUavActivity instance;
 
     GoogleMap mMap;
-    private static HashMap<String, MarkerOptions> userMap;
+    private static HashMap<String, Marker> userMap;
     private EventReactor eventReactor;
     private String username;
     private Timer uavTimer;
 
     private static int uavCountdown = 0;
+    private boolean firstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         instance = this;
+        firstTime = true;
 
         username = getIntent().getExtras().getString("username");
 
@@ -101,12 +103,14 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
                             System.out.println("Location is not null");
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                             final MarkerOptions newMarker = new MarkerOptions().position(latLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                            userMap.put(username, newMarker);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    System.out.println(mMap);
-                                    instance.mMap.addMarker(newMarker);
+                                    Marker oldMarker = userMap.get(username);
+                                    if (oldMarker != null) {
+                                        oldMarker.remove();
+                                    }
+                                    userMap.put(username, instance.mMap.addMarker(newMarker));
                                     System.out.println("Added marker for " + username + ": " + newMarker);
                                 }
                             });
@@ -124,32 +128,35 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
             }, 0, 3000);
         }
         else {
-            zoomCamera();
+            if (firstTime) {
+                zoomCamera();
+            }
         }
     }
 
     public void zoomCamera() {
-        final LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        boolean cancelBuild = false;
-        for (MarkerOptions marker: userMap.values()) {
-            if (marker == null) {
-                System.out.println(userMap);
-                cancelBuild = true;
-                break;
-            }
-            builder.include(marker.getPosition());
-        }
-        if (!cancelBuild) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    instance.mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                boolean cancelBuild = false;
+                for (Marker marker: userMap.values()) {
+                    if (marker == null) {
+                        System.out.println(userMap);
+                        cancelBuild = true;
+                        break;
+                    }
+                    builder.include(marker.getPosition());
                 }
-            });
-        }
-        else {
-            System.out.println("Map View Refresh Cancelled");
-        }
+                if (!cancelBuild) {
+                    instance.mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+                    firstTime = false;
+                }
+                else {
+                    System.out.println("Map Zoom Cancelled");
+                }
+            }
+        });
     }
 
 
@@ -161,16 +168,22 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         if (location != null) {
             final LatLng currLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             final MarkerOptions newMarker = new MarkerOptions().position(currLocationLatLng).title(user);
-            userMap.put(user, newMarker);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    System.out.println(mMap);
-                    instance.mMap.addMarker(newMarker);
-                    System.out.println("Added marker for " + user + ": " + newMarker);
+            if (instance.mMap != null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Marker oldMarker = userMap.get(user);
+                        if (oldMarker != null) {
+                            oldMarker.remove();
+                        }
+                        userMap.put(user, instance.mMap.addMarker(newMarker));
+                        System.out.println("Added marker for " + user + ": " + newMarker);
+                    }
+                });
+                if (firstTime) {
+                    zoomCamera();
                 }
-            });
-            zoomCamera();
+            }
         }
         else {
             System.out.println("Received NULL location");
