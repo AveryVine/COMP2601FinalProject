@@ -34,6 +34,9 @@ public class GameActivity extends AppCompatActivity {
     private Button button_incognito;
     private Button button_gpsDecoy;
 
+    boolean deployUAVActive = false;
+    boolean uavRegionActive = false;
+
     TextView logs;
 
     private byte[] bytes;
@@ -70,7 +73,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MakePhotoActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -79,7 +82,7 @@ public class GameActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                 intent.putExtra("location", client.getCurrentLocation());
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -87,19 +90,19 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean completePurchase = true;
-                if (DeployUavActivity.getInstance() != null) {
-                    if (DeployUavActivity.getInstance().getUavCountdown() == 0) {
-                        completePurchase = client.purchase("Deployed UAV", 400);
-                    }
+                if (uavRegionActive) {
+                    completePurchase = false;
+                    logs.append("\nUAV Region already deployed. Wait for it to finish!");
                 }
-                else {
+                else if (!deployUAVActive) {
                     completePurchase = client.purchase("Deployed UAV", 400);
                 }
                 if (completePurchase) {
                     updateCashTitle();
+                    deployUAVActive = true;
                     Intent intent = new Intent(getApplicationContext(), DeployUavActivity.class);
                     intent.putExtra("username", client.getUsername());
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
                 }
             }
         });
@@ -108,19 +111,19 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean completePurchase = true;
-                if (UavRegionActivity.getInstance() != null) {
-                    if (UavRegionActivity.getInstance().getUavCountdown() == 0) {
-                        completePurchase = client.purchase("Deployed UAV Region", 200);
-                    }
+                if (deployUAVActive) {
+                    completePurchase = false;
+                    logs.append("\nUAV already deployed. Wait for it to finish!");
                 }
-                else {
+                else if (!uavRegionActive) {
                     completePurchase = client.purchase("Deployed UAV Region", 200);
                 }
                 if (completePurchase) {
                     updateCashTitle();
+                    uavRegionActive = true;
                     Intent intent = new Intent(getApplicationContext(), UavRegionActivity.class);
                     intent.putExtra("username", client.getUsername());
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
                 }
             }
         });
@@ -183,6 +186,16 @@ public class GameActivity extends AppCompatActivity {
 //        client.onResume();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
+    }
+
 
 
 
@@ -226,7 +239,7 @@ public class GameActivity extends AppCompatActivity {
         this.bytes = bytes;
         Intent intent = new Intent(getApplicationContext(), PhotoConfirmationActivity.class);
         intent.putExtra("sender", sender);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     public void photoResponseReceived(String sender, byte[] bytes, boolean success) {
@@ -234,7 +247,7 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), PhotoResponseActivity.class);
         intent.putExtra("sender", sender);
         intent.putExtra("success", success);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     public byte[] getImageBytes() {

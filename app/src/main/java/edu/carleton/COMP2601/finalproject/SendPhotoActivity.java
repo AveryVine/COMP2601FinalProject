@@ -1,5 +1,6 @@
 package edu.carleton.COMP2601.finalproject;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -58,13 +59,24 @@ public class SendPhotoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
+    }
+
     private void listItemClicked(int position) {
         String user = userList.get(position);
         Event event = new Event("PHOTO_EVENT");
+        System.out.println("Sending message to " + user);
         event.put(Fields.RECIPIENT, user);
         event.put(Fields.BODY, bytes);
         eventReactor.request(event);
-        finish();
+//        finish();
     }
 
     public void users(ArrayList<String> listOfUsers) {

@@ -1,5 +1,6 @@
 package edu.carleton.COMP2601.finalproject;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Parcel;
 import android.support.v4.app.FragmentActivity;
@@ -72,13 +73,21 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         eventReactor.request(ev);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
+    }
+
 
     public void updateUserList(final ArrayList<String> userArr) {
         for (String user: userArr) {
             userMap.put(user, null);
         }
-        final Event event = new Event("GET_LOCATION");
-        event.put(Fields.ACTIVITY, "DeployUavActivity");
         if (uavCountdown == 0) {
             uavCountdown = 20;
             uavTimer = new Timer();
@@ -91,6 +100,7 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
                             @Override
                             public void run() {
                                 GameActivity.getInstance().logs.append("\nUAV scan completed");
+                                GameActivity.getInstance().deployUAVActive = false;
                                 finish();
                             }
                         });
@@ -119,6 +129,8 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
                         for (String user : userArr) {
                             if (!user.equals(username)) {
                                 System.out.println("Getting location for " + user + " (tick " + uavCountdown + ")");
+                                Event event = new Event("GET_LOCATION");
+                                event.put(Fields.ACTIVITY, "DeployUavActivity");
                                 event.put(Fields.RECIPIENT, user);
                                 eventReactor.request(event);
                             }

@@ -21,7 +21,7 @@ public class EventReactor {
 
     public EventReactor() {
         instance = this;
-        address = "172.20.10.3";
+        address = "192.168.0.14";
         port = 7000;
         room = Fields.DEFAULT;
     }
@@ -144,9 +144,9 @@ public class EventReactor {
 
 
     public void request(final Event event) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
                 if (event.type.equals("LOAD_ROOM")) {
                     room = (String) event.get(Fields.BODY);
                     event.type = "GET_USERS";
@@ -157,6 +157,7 @@ public class EventReactor {
                 event.put(Fields.ROOM, room);
 
                 try {
+                    System.out.println("Request: sending event");
                     es.putEvent(event);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -164,8 +165,8 @@ public class EventReactor {
 
                 if (event.type.equals("LEAVE_ROOM"))
                     room = Fields.DEFAULT;
-            }
-        }).start();
+//            }
+//        }).start();
     }
 
 

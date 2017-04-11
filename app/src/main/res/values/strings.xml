@@ -2,6 +2,7 @@
     <string name="app_name">KillCam</string>
     <string name="mainActivity_title">Select a Room</string>
     <string name="mainActivity_promptForName_alert">Please choose a username.</string>
+    <string name="mainActivity_gameOver_alert">You lose! Please play again.</string>
     <string name="mainActivity_connect_toast">Connected!</string>
     <string name="roomActivity_unableToStartGame_alert">There\'s not enough players in this room to start a game!</string>
     <string name="FEATURE_UNAVAILABLE_ALERT">Woah there cowboy! That feature\'s not implemented yet!</string>

@@ -1,5 +1,6 @@
 package edu.carleton.COMP2601.finalproject;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -44,5 +45,15 @@ public class PhotoResponseActivity extends AppCompatActivity {
         scaledImage = Bitmap.createScaledBitmap(image, 512, nh, true);
 
         imageView.setImageBitmap(scaledImage);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
     }
 }

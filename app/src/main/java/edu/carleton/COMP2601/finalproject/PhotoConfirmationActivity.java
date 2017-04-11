@@ -1,6 +1,7 @@
 package edu.carleton.COMP2601.finalproject;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
@@ -50,7 +51,11 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
                 event.put(Fields.RECIPIENT, opponent);
                 event.put(Fields.BODY, bytes);
                 eventReactor.request(event);
-                FEATURE_UNAVAILABLE();
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", -1);
+                setResult(-1,returnIntent);
+                finish();
             }
         });
 
@@ -64,6 +69,16 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
     }
 
     private void FEATURE_UNAVAILABLE() {

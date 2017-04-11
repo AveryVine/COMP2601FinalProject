@@ -96,9 +96,19 @@ public class RoomActivity extends AppCompatActivity {
     public void startGame() {
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
         intent.putExtra("username", username);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
+    }
 
 
     public static RoomActivity getInstance() {

@@ -12,8 +12,8 @@ import java.net.Socket;
  */
 
 public class EventStreamImpl implements EventStream {
-    ObjectInputStream ois;
-    ObjectOutputStream oos;
+    final ObjectInputStream ois;
+    final ObjectOutputStream oos;
     Socket socket;
 
     /*
@@ -61,8 +61,8 @@ public class EventStreamImpl implements EventStream {
             if (ois != null)
                 ois.close();
             socket = null;
-            oos = null;
-            ois = null;
+//            oos = null;
+//            ois = null;
         } catch (IOException e) {
             // Fail quietly
         }

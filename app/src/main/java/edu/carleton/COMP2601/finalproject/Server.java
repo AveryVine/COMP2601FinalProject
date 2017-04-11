@@ -21,6 +21,7 @@ public class Server {
     private EventStreamImpl es;
     private ThreadWithReactor twr;
     private ConcurrentHashMap<String, ThreadWithReactor> clients;
+    private ArrayList<String> disabledRooms;
     private ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentHashMap<String, String>>> rooms;
         /*
         ConcurrentHashMap1 <RoomNames, ConcurrentHashMap2>
@@ -37,6 +38,7 @@ public class Server {
 
         r = new Reactor();
         clients = new ConcurrentHashMap<>();
+        disabledRooms = new ArrayList<>();
         rooms = new ConcurrentHashMap<>();
         generateRoomNames();
     }
@@ -72,6 +74,7 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 String activity = (String) event.get(Fields.ACTIVITY);
                 System.out.println(roomName + ": " + id + " requested users");
 
@@ -82,6 +85,7 @@ public class Server {
                 }
                 else {
                     recipients = new HashSet<>();
+                    System.out.println("Sending back the user list to recipient: " + id);
                     recipients.add(id);
                 }
                 sendRoomOccupantList(roomName, activity, recipients);
@@ -92,6 +96,7 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 String recipient = (String) event.get(Fields.RECIPIENT);
 
                 System.out.println(roomName + ": " + id + " requested location information from " + recipient);
@@ -103,6 +108,7 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 String recipient = (String) event.get(Fields.RECIPIENT);
 
                 System.out.println(roomName + ": " + id + " is sending location information to " + recipient);
@@ -125,8 +131,10 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 System.out.println(roomName + ": " + id + " started the game");
 
+                disabledRooms.add(roomName);
                 event = new Event("START_GAME");
                 broadcastEvent(event, rooms.get(roomName).keySet());
             }
@@ -136,6 +144,7 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 System.out.println(roomName + ": " + id + " connected to the game");
 
                 event = new Event("CASH_DEPOSIT");
@@ -148,6 +157,7 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 String recipient = (String) event.get(Fields.RECIPIENT);
                 System.out.println(roomName + ": " + id + " is sending a photo to " + recipient);
 
@@ -159,10 +169,13 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 String recipient = (String) event.get(Fields.RECIPIENT);
                 System.out.println(roomName + ": " + id + " is sending a confirmed kill response to " + recipient);
 
-                passEventToRecipient(event);
+                Set<String> recipients = rooms.get(roomName).keySet();
+                recipients.remove(id);
+                broadcastEvent(event, recipients);
             }
         });
         r.register("TARGET_ESCAPED", new EventHandler() {
@@ -170,6 +183,7 @@ public class Server {
             public void handleEvent(Event event) {
                 String id = (String) event.get(Fields.ID);
                 String roomName = (String) event.get(Fields.ROOM);
+                System.out.println("Room: " + rooms.get(roomName).keySet());
                 String recipient = (String) event.get(Fields.RECIPIENT);
                 System.out.println(roomName + ": " + id + " is sending a target escaped response to " + recipient);
 
@@ -204,6 +218,9 @@ public class Server {
         Event event = new Event("ROOM_LIST");
         ArrayList<String> listOfRooms = new ArrayList<>();
         listOfRooms.addAll(rooms.keySet());
+        for (String disabledRoom: disabledRooms) {
+            listOfRooms.remove(disabledRoom);
+        }
         event.put(Fields.BODY, listOfRooms);
         broadcastEvent(event, clients.keySet());
     }
@@ -234,6 +251,7 @@ public class Server {
 
     public void sendEvent(Event event, ThreadWithReactor twr) {
         try {
+            System.out.println("Sending event");
             twr.getEventSource().putEvent(event);
         } catch (Exception e) {
             e.printStackTrace();

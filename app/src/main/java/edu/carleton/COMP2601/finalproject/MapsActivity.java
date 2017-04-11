@@ -1,5 +1,6 @@
 package edu.carleton.COMP2601.finalproject;
 
+import android.content.Intent;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -73,6 +74,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     });
                 }
             }, 3000, 3000);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
         }
     }
 }

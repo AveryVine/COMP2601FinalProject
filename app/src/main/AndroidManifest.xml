@@ -38,7 +38,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".MakePhotoActivity"
-            android:persistent="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SendPhotoActivity"

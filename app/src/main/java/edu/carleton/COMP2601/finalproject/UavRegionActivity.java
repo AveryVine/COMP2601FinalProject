@@ -1,5 +1,6 @@
 package edu.carleton.COMP2601.finalproject;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Parcel;
 import android.support.v4.app.FragmentActivity;
@@ -81,8 +82,6 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
         for (String user: userArr) {
             userMap.put(user, null);
         }
-        final Event event = new Event("GET_LOCATION");
-        event.put(Fields.ACTIVITY, "UavRegionActivity");
         if (uavCountdown == 0) {
             uavCountdown = 100;
             uavTimer = new Timer();
@@ -95,6 +94,7 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
                             @Override
                             public void run() {
                                 GameActivity.getInstance().logs.append("\nUAV region completed");
+                                GameActivity.getInstance().uavRegionActive = false;
                                 finish();
                             }
                         });
@@ -119,10 +119,11 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
                                 }
                             });
                         }
-
                         for (String user : userArr) {
                             if (!user.equals(username)) {
                                 System.out.println("Getting location for " + user + " (tick " + uavCountdown + ")");
+                                Event event = new Event("GET_LOCATION");
+                                event.put(Fields.ACTIVITY, "UavRegionActivity");
                                 event.put(Fields.RECIPIENT, user);
                                 eventReactor.request(event);
                             }
@@ -138,29 +139,35 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", resultCode);
+            setResult(-1,returnIntent);
+            finish();
+        }
+    }
+
     public void zoomCamera() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 final LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 int numMarkers = 0;
-                boolean cancelBuild = false;
                 for (Marker marker: userMap.values()) {
-                    if (marker == null) {
-                        System.out.println(userMap);
-                        cancelBuild = true;
-                        break;
-                    }
-                    LatLng currLatLng = userMap.get(username).getPosition();
-                    float[] results = new float[1];
-                    Location.distanceBetween(currLatLng.latitude, currLatLng.longitude, marker.getPosition().latitude, marker.getPosition().longitude, results);
-                    System.out.println("Results: " + results[0]);
-                    if (results[0] < radius) {
-                        builder.include(marker.getPosition());
-                        numMarkers++;
+                    if (marker != null) {
+                        LatLng currLatLng = userMap.get(username).getPosition();
+                        float[] results = new float[1];
+                        Location.distanceBetween(currLatLng.latitude, currLatLng.longitude, marker.getPosition().latitude, marker.getPosition().longitude, results);
+                        System.out.println("Results: " + results[0]);
+                        if (results[0] < radius) {
+                            builder.include(marker.getPosition());
+                            numMarkers++;
+                        }
                     }
                 }
-                if (!cancelBuild) {
+                if (userMap.get(username) != null) {
                     if (numMarkers > 1) {
                         instance.mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
                     }
@@ -186,7 +193,7 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
         if (location != null) {
             final LatLng currLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             final MarkerOptions newMarker = new MarkerOptions().position(currLocationLatLng).title(user);
-            if (instance.mMap != null) {
+            if (instance.mMap != null && userMap.get(username) != null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -213,12 +220,6 @@ public class UavRegionActivity extends FragmentActivity implements OnMapReadyCal
             System.out.println("Received NULL location");
         }
     }
-
-
-    public static int getUavCountdown() {
-        return uavCountdown;
-    }
-
 
     public static UavRegionActivity getInstance() {
         return instance;

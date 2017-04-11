@@ -1,11 +1,7 @@
 package edu.carleton.COMP2601.finalproject;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -56,8 +52,33 @@ public class MainActivity extends AppCompatActivity {
         eventReactor.request(event);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == -1) {
+            gameOver();
+        }
+    }
 
-
+    private void gameOver() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.mainActivity_gameOver_alert);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (username.equals("")) {
+                    //TODO - enter a valid username?
+                    System.exit(0);
+                }
+                connectToServer();
+                roomListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        listItemClicked(position);
+                    }
+                });
+            }
+        });
+        builder.show();
+    }
 
     private void promptForName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -108,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
         intent.putExtra("roomTitle", room);
         intent.putExtra("username", username);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
 
