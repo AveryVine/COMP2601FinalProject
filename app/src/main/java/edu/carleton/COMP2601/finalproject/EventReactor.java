@@ -18,7 +18,9 @@ public class EventReactor {
     private int port;
 
 
-
+    /*----------
+    - Description: Constructor that sets the static instance, address (IMPORTANT), port and room
+    ----------*/
     public EventReactor() {
         instance = this;
         address = "192.168.0.14";
@@ -26,8 +28,11 @@ public class EventReactor {
         room = Fields.DEFAULT;
     }
 
-
-
+    /*----------
+    - Description: connects the user to the server and prepares the client-side reactor
+    - Input: username
+    - Return: none
+    ----------*/
     public void connect(final String username) {
         this.username = username;
         try {
@@ -144,8 +149,11 @@ public class EventReactor {
         }
     }
 
-
-
+    /*----------
+    - Description: Sends event to the server
+    - Input: final event
+    - Return: none
+    ----------*/
     public void request(final Event event) {
         new Thread(new Runnable() {
             @Override
@@ -172,7 +180,6 @@ public class EventReactor {
         }).start();
     }
 
-
-
+    //Static instance of EventReactor class
     public static EventReactor getInstance() { return instance; }
 }

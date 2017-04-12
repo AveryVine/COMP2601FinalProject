@@ -26,6 +26,11 @@ public class SendPhotoActivity extends AppCompatActivity {
     private Bitmap scaledImage;
     private EventReactor eventReactor;
 
+    /*----------
+    - Description: runs when the activity first boots up.
+                   - Initializes event reactor, Image/list view, user list, adapter, bitmap, static instance and image.
+                   - Adds a click listener for elements in list view.
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,11 @@ public class SendPhotoActivity extends AppCompatActivity {
 
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == -1) {
@@ -75,6 +85,12 @@ public class SendPhotoActivity extends AppCompatActivity {
         }
     }
 
+    /*----------
+    - Description: Called when one of the list items in the list view is clicked.
+                   Sends a PHOTO_EVENT event to the server.
+    - Input: position
+    - Return: none
+    ----------*/
     private void listItemClicked(int position) {
         String user = userList.get(position);
         Event event = new Event("PHOTO_EVENT");
@@ -85,6 +101,11 @@ public class SendPhotoActivity extends AppCompatActivity {
         finish();
     }
 
+    /*----------
+    - Description: Updates list of users
+    - Input: listOfUsers
+    - Return: none
+    ----------*/
     public void users(ArrayList<String> listOfUsers) {
         userList.clear();
         userList.addAll(listOfUsers);
@@ -96,6 +117,7 @@ public class SendPhotoActivity extends AppCompatActivity {
         });
     }
 
+    //Static instance of SendPhotoActivity class
     public static SendPhotoActivity getInstance() {
         return instance;
     }

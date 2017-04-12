@@ -34,6 +34,12 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
     private static int uavCountdown = 0;
     private boolean firstTime;
 
+    /*----------
+    - Description: runs when the activity first boots up.
+                   - Initializes static instance, event reactor and boolean value.
+                   - Creates a map fragment.
+                   - Sets the map layout
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +64,16 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    /*----------
+    - Description: Creates a map and sends a new GET_USERS event to the server.
+    - Input: none
+    - Return: none
+    ----------*/
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -73,6 +83,11 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         eventReactor.request(ev);
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == -1) {
@@ -89,7 +104,11 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
-
+    /*----------
+    - Description: Updates list of users
+    - Input: userArr
+    - Return: none
+    ----------*/
     public void updateUserList(final ArrayList<String> userArr) {
         for (String user: userArr) {
             userMap.put(user, null);
@@ -152,6 +171,11 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
+    /*----------
+    - Description: Responsible for animating camera in map to correct distance.
+    - Input: none
+    - Return: none
+    ----------*/
     public void zoomCamera() {
         runOnUiThread(new Runnable() {
             @Override
@@ -177,7 +201,11 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
-
+    /*----------
+    - Description: Shows the current location of a given user.
+    - Input: bytes, final user
+    - Return: none
+    ----------*/
     public void showLocation(byte[] bytes, final String user) {
         Parcel parcel = Parcel.obtain();
         parcel.unmarshall(bytes, 0, bytes.length);
@@ -208,12 +236,12 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
-
+    //Getter for uavCountdown
     public static int getUavCountdown() {
         return uavCountdown;
     }
 
-
+    //Static instance of DeployUavActivity class
     public static DeployUavActivity getInstance() {
         return instance;
     }
