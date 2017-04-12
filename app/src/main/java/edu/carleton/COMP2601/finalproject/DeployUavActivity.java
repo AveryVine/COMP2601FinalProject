@@ -60,15 +60,6 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     /*----------
     - Description: Creates a map and sends a new GET_USERS event to the server.
     - Input: none
@@ -234,11 +225,6 @@ public class DeployUavActivity extends FragmentActivity implements OnMapReadyCal
         else {
             System.out.println("Received NULL location");
         }
-    }
-
-    //Getter for uavCountdown
-    public static int getUavCountdown() {
-        return uavCountdown;
     }
 
     //Static instance of DeployUavActivity class

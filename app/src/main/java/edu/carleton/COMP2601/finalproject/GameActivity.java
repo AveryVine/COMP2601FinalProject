@@ -6,15 +6,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.Serializable;
 
 /**
  * Created by AveryVine on 2017-03-18.
@@ -55,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        setTitle("Cash: $0");
+        setTitle(R.string.gameActivity_title + "0");
         instance = this;
         client = new Client(getIntent().getExtras().getString("username"));
 
@@ -103,7 +100,7 @@ public class GameActivity extends AppCompatActivity {
                 boolean completePurchase = true;
                 if (uavRegionActive) {
                     completePurchase = false;
-                    logs.append("\nUAV Region already deployed. Wait for it to finish!");
+                    logs.append("\n" + R.string.gameActivity_uavRegionActive_log);
                 }
                 else if (!deployUAVActive) {
                     completePurchase = client.purchase("Deployed UAV", 400);
@@ -124,7 +121,7 @@ public class GameActivity extends AppCompatActivity {
                 boolean completePurchase = true;
                 if (deployUAVActive) {
                     completePurchase = false;
-                    logs.append("\nUAV already deployed. Wait for it to finish!");
+                    logs.append("\n" + R.string.gameActivity_deployUavActive_log);
                 }
                 else if (!uavRegionActive) {
                     completePurchase = client.purchase("Deployed UAV Region", 200);
@@ -176,27 +173,6 @@ public class GameActivity extends AppCompatActivity {
         client.onStart();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("onStop");
-//        client.onStop();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        System.out.println("onPause");
-//        client.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("onResume");
-//        client.onResume();
-    }
-
     /*----------
     - Description: Called when the subsequent activity returns. Calls the corresponding function.
     - Input: requestCode, resultCode, data
@@ -229,7 +205,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                logs.append("\nReceived deposit: $" + deposit);
+                logs.append("\n" + R.string.gameActivity_receivedDeposit_log + deposit);
             }
         });
     }
@@ -243,7 +219,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                setTitle("Cash: $" + client.getCash());
+                logs.append("\n" + R.string.gameActivity_title + client.getCash());
             }
         });
     }

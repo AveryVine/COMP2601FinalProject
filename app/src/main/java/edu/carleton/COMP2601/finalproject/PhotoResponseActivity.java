@@ -42,15 +42,17 @@ public class PhotoResponseActivity extends AppCompatActivity {
         xImageView = (ImageView) findViewById(R.id.xImageView);
 
         if (success) {
-            setTitle("Kill Confirmed: " + opponent);
-            GameActivity.getInstance().logs.append("\nKill Confirmed: " + opponent);
+            String killConfirmed = R.string.photoResponseActivity_killConfirmed + " " + opponent;
+            setTitle(killConfirmed);
+            GameActivity.getInstance().logs.append("\n" + killConfirmed);
             Event event = new Event("GET_USERS");
             event.put(Fields.ACTIVITY, "PhotoResponseActivity");
             eventReactor.request(event);
         }
         else {
-            setTitle("Target Escaped: " + opponent);
-            GameActivity.getInstance().logs.append("\nTarget Escaped: " + opponent);
+            String targetEscaped = R.string.photoResponseActivity_targetEscaped + " " + opponent;
+            setTitle(targetEscaped);
+            GameActivity.getInstance().logs.append("\n" + targetEscaped);
             imageView.setImageAlpha(100);
             xImageView.setImageAlpha(0);
         }

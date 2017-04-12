@@ -127,18 +127,4 @@ public class RoomActivity extends AppCompatActivity {
         return instance;
     }
 
-
-
-    private void FEATURE_UNAVAILABLE() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.FEATURE_UNAVAILABLE_ALERT);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                System.out.println(R.string.FEATURE_UNAVAILABLE_ALERT);
-            }
-        });
-        builder.show();
-    }
-
 }

@@ -4,7 +4,15 @@
     <string name="mainActivity_promptForName_alert">Please choose a username.</string>
     <string name="mainActivity_gameOver_alert">You lose! Please play again.</string>
     <string name="mainActivity_youWin_alert">You\'ve eliminated everyone else! Thanks for playing!</string>
+    <string name="photoConfirmationActivity_title">Sniped By:</string>
     <string name="mainActivity_connect_toast">Connected!</string>
+    <string name="client_notEnoughCash_log">Not enough cash!</string>
+    <string name="gameActivity_uavRegionActive_log">UAV Region already active. Wait for it to finish!</string>
+    <string name="gameActivity_deployUavActive_log">Deploy UAV already active. Wait for it to finish!</string>
+    <string name="gameActivity_receivedDeposit_log">Received Deposit: $</string>
+    <string name="gameActivity_title">Cash: $</string>
+    <string name="photoResponseActivity_killConfirmed">Kill Confirmed:</string>
+    <string name="photoResponseActivity_targetEscaped">Target Escaped:</string>
     <string name="roomActivity_unableToStartGame_alert">There\'s not enough players in this room to start a game!</string>
     <string name="FEATURE_UNAVAILABLE_ALERT">Woah there cowboy! That feature\'s not implemented yet!</string>
     <string name="title_activity_maps">Map</string>

@@ -1,16 +1,13 @@
 package edu.carleton.COMP2601.finalproject;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class PhotoConfirmationActivity extends AppCompatActivity {
 
@@ -34,7 +31,8 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo_confirmation);
         opponent = getIntent().getExtras().getString("sender");
         bytes = GameActivity.getInstance().getImageBytes();
-        setTitle("Sniped By: " + opponent);
+        String title = R.string.photoConfirmationActivity_title + " " + opponent;
+        setTitle(title);
         eventReactor = EventReactor.getInstance();
 
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -94,22 +92,5 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
             setResult(2, returnIntent);
             finish();
         }
-    }
-
-    /*----------
-    - Description: Creates a dialog box that notifies user that feature selected is unavailable.
-    - Input: none
-    - Return: none
-    ----------*/
-    private void FEATURE_UNAVAILABLE() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.FEATURE_UNAVAILABLE_ALERT);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                System.out.println(R.string.FEATURE_UNAVAILABLE_ALERT);
-            }
-        });
-        builder.show();
     }
 }

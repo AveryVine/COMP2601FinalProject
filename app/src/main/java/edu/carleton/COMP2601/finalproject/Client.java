@@ -55,19 +55,6 @@ public class Client implements Serializable, ConnectionCallbacks,
         googleApiClient.connect();
     }
 
-    public void onStop() {
-        googleApiClient.disconnect();
-    }
-
-    public void onPause() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-    }
-
-    public void onResume() {
-        if (googleApiClient.isConnected())
-            startLocationUpdates();
-    }
-
 
     public Location getCurrentLocation() {
         System.out.println("Getting last known location");
@@ -91,7 +78,7 @@ public class Client implements Serializable, ConnectionCallbacks,
 
     public boolean purchase(String message, int purchase) {
         if (cash - purchase < 0) {
-            GameActivity.getInstance().logs.append("\nNot enough cash");
+            GameActivity.getInstance().logs.append("\n" + R.string.client_notEnoughCash_log);
             return false;
         }
         cash -= purchase;
