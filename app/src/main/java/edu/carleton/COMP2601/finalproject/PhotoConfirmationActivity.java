@@ -31,7 +31,7 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo_confirmation);
         opponent = getIntent().getExtras().getString("sender");
         bytes = GameActivity.getInstance().getImageBytes();
-        String title = R.string.photoConfirmationActivity_title + " " + opponent;
+        String title = getString(R.string.photoConfirmationActivity_title) + " " + opponent;
         setTitle(title);
         eventReactor = EventReactor.getInstance();
 

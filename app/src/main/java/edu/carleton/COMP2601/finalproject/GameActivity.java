@@ -52,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        setTitle(R.string.gameActivity_title + "0");
+        setTitle(getString(R.string.gameActivity_title) + "0");
         instance = this;
         client = new Client(getIntent().getExtras().getString("username"));
 
@@ -100,7 +100,7 @@ public class GameActivity extends AppCompatActivity {
                 boolean completePurchase = true;
                 if (uavRegionActive) {
                     completePurchase = false;
-                    logs.append("\n" + R.string.gameActivity_uavRegionActive_log);
+                    logs.append("\n" + getString(R.string.gameActivity_uavRegionActive_log));
                 }
                 else if (!deployUAVActive) {
                     completePurchase = client.purchase("Deployed UAV", 400);
@@ -112,6 +112,9 @@ public class GameActivity extends AppCompatActivity {
                     intent.putExtra("username", client.getUsername());
                     startActivityForResult(intent, 1);
                 }
+                else {
+                    GameActivity.getInstance().logs.append("\n" + getString(R.string.client_notEnoughCash_log));
+                }
             }
         });
 
@@ -121,7 +124,7 @@ public class GameActivity extends AppCompatActivity {
                 boolean completePurchase = true;
                 if (deployUAVActive) {
                     completePurchase = false;
-                    logs.append("\n" + R.string.gameActivity_deployUavActive_log);
+                    logs.append("\n" + getString(R.string.gameActivity_deployUavActive_log));
                 }
                 else if (!uavRegionActive) {
                     completePurchase = client.purchase("Deployed UAV Region", 200);
@@ -132,6 +135,9 @@ public class GameActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), UavRegionActivity.class);
                     intent.putExtra("username", client.getUsername());
                     startActivityForResult(intent, 1);
+                }
+                else {
+                    GameActivity.getInstance().logs.append("\n" + getString(R.string.client_notEnoughCash_log));
                 }
             }
         });
@@ -205,7 +211,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                logs.append("\n" + R.string.gameActivity_receivedDeposit_log + deposit);
+                logs.append("\n" + getString(R.string.gameActivity_receivedDeposit_log) + deposit);
             }
         });
     }
@@ -219,7 +225,7 @@ public class GameActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                logs.append("\n" + R.string.gameActivity_title + client.getCash());
+                setTitle("\n" + getString(R.string.gameActivity_title) + client.getCash());
             }
         });
     }

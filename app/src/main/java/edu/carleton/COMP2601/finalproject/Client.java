@@ -78,7 +78,6 @@ public class Client implements Serializable, ConnectionCallbacks,
 
     public boolean purchase(String message, int purchase) {
         if (cash - purchase < 0) {
-            GameActivity.getInstance().logs.append("\n" + R.string.client_notEnoughCash_log);
             return false;
         }
         cash -= purchase;
