@@ -30,8 +30,10 @@ public class Server {
          */
     private int numberOfRooms;
 
-
-
+    /*----------
+    - Description: Constructor initializes port, number of rooms, reactor,
+                   clients/rooms concurrenthashmap and generates room names.
+    ----------*/
     public Server() {
         PORT = 7000;
         numberOfRooms = 4;
@@ -43,8 +45,11 @@ public class Server {
         generateRoomNames();
     }
 
-
-
+    /*----------
+    - Description: initializes the reactor
+    - Input: none
+    - Return: none
+    ----------*/
     public void init() {
         r.register("CONNECT_REQUEST", new EventHandler() {
             @Override
@@ -212,7 +217,11 @@ public class Server {
     }
 
 
-
+    /*----------
+    - Description: directly passes the event to the recipient
+    - Input: the event to be passed
+    - Return: none
+    ----------*/
     public void passEventToRecipient(Event event) {
         ThreadWithReactor twr = clients.get(event.get(Fields.RECIPIENT));
         EventStream es = twr.getEventSource();
@@ -223,8 +232,11 @@ public class Server {
         }
     }
 
-
-
+    /*----------
+    - Description: Creates a new ROOM_LIST event, adds listOfRooms to it and broadcasts the event
+    - Input: none
+    - Return: none
+    ----------*/
     public void sendRoomList() {
         Event event = new Event("ROOM_LIST");
         ArrayList<String> listOfRooms = new ArrayList<>();
@@ -238,8 +250,12 @@ public class Server {
         broadcastEvent(event, clients.keySet());
     }
 
-
-
+    /*----------
+    - Description: Creates a new USERS event, adds rooms, activity name and list of users to the event.
+                   Then broadcasts the event.
+    - Input: roomName, activity, recipients
+    - Return: none
+    ----------*/
     public void sendRoomOccupantList(String roomName, String activity, Set<String> recipients) {
         Event event = new Event("USERS");
         event.put(Fields.ROOM, roomName);
@@ -250,8 +266,11 @@ public class Server {
         broadcastEvent(event, recipients);
     }
 
-
-
+    /*----------
+    - Description: Sends the event to every single user in recipients
+    - Input: event, recipients
+    - Return: none
+    ----------*/
     public void broadcastEvent(Event event, Set<String> recipients) {
         for (String id : recipients) {
             event.put(Fields.ID, id);
@@ -260,8 +279,11 @@ public class Server {
         }
     }
 
-
-
+    /*----------
+    - Description: Sends the event back to the client
+    - Input: event, twr
+    - Return: none
+    ----------*/
     public void sendEvent(Event event, ThreadWithReactor twr) {
         try {
             System.out.println("Sending event");
@@ -271,8 +293,11 @@ public class Server {
         }
     }
 
-
-
+    /*----------
+    - Description: Generates a random list of room names
+    - Input: none
+    - Return: none
+    ----------*/
     public void generateRoomNames() {
         Random random = new Random();
         String[] potentialRoomNames = {"Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot",
@@ -295,8 +320,11 @@ public class Server {
         }
     }
 
-
-
+    /*----------
+    - Description: runs the server loop, listens for connections
+    - Input: none
+    - Return: none
+    ----------*/
     public void run() {
         try {
             System.out.println("Server is listening on port " + PORT);
@@ -311,8 +339,9 @@ public class Server {
         }
     }
 
-
-
+    /*----------
+    - Description: starts the server
+    ----------*/
     public static void main(String[] args) {
         Server ns = new Server();
         ns.init();

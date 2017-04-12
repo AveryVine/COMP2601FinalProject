@@ -75,6 +75,9 @@ public class MakePhotoActivity extends Activity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
+    /*----------
+    - Description: runs when the activity first boots up
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +95,10 @@ public class MakePhotoActivity extends Activity {
             }
         });
     }
+
+    /*----------
+    - Description: Opens the camera
+    ----------*/
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -110,6 +117,8 @@ public class MakePhotoActivity extends Activity {
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
     };
+
+
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(CameraDevice camera) {
@@ -128,6 +137,7 @@ public class MakePhotoActivity extends Activity {
             cameraDevice = null;
         }
     };
+
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
@@ -136,11 +146,19 @@ public class MakePhotoActivity extends Activity {
             createCameraPreview();
         }
     };
+
+    /*----------
+    - Description: starts background thread for the camera
+    ----------*/
     protected void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
+
+    /*----------
+    - Description: stops background thread for the camera
+    ----------*/
     protected void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
@@ -151,6 +169,10 @@ public class MakePhotoActivity extends Activity {
             e.printStackTrace();
         }
     }
+
+    /*----------
+    - Description: Takes the picture
+    ----------*/
     protected void takePicture() {
         if(null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null");
@@ -338,6 +360,11 @@ public class MakePhotoActivity extends Activity {
         super.onPause();
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == -1) {
@@ -354,10 +381,16 @@ public class MakePhotoActivity extends Activity {
         }
     }
 
+    /*----------
+    - Description: gets the byte array
+    - Input: none
+    - Return: bytes
+    ----------*/
     public byte[] getImageBytes() {
         return bytes;
     }
 
+    //Static instance of MakePhotoActivity
     public static MakePhotoActivity getInstance() {
         return instance;
     }

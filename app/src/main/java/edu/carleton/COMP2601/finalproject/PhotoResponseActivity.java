@@ -23,6 +23,10 @@ public class PhotoResponseActivity extends AppCompatActivity {
     private String opponent;
     private boolean success;
 
+    /*----------
+    - Description: runs when the activity first boots up.
+                   - Initializes Image views, event reactor, bitmaps and sets the image.
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,11 @@ public class PhotoResponseActivity extends AppCompatActivity {
         imageView.setImageBitmap(scaledImage);
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == -1) {
@@ -75,6 +84,11 @@ public class PhotoResponseActivity extends AppCompatActivity {
         }
     }
 
+    /*----------
+    - Description: Returns a new game over intent if user list size is smaller than 2
+    - Input: userList
+    - Return: none
+    ----------*/
     public void users(ArrayList<String> userList) {
         if (userList.size() < 2) {
             Intent returnIntent = new Intent();
@@ -84,6 +98,7 @@ public class PhotoResponseActivity extends AppCompatActivity {
         }
     }
 
+    //Static instance of PhotoResponseActivity
     public static PhotoResponseActivity getInstance() {
         return instance;
     }

@@ -25,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private EventReactor eventReactor;
 
 
-
+    /*----------
+    - Description: runs when the activity first boots up
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /*----------
+    - Description: Sends a disconnect request message to the server
+    - Input: none
+    - Return: none
+    ----------*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -52,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
         eventReactor.request(event);
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         connectedResponse();
@@ -63,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*----------
+    - Description: Creates a dialog box for the game winner.
+    - Input: none
+    - Return: none
+    ----------*/
     private void youWin() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.mainActivity_youWin_alert);
@@ -78,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    /*----------
+    - Description: Creates a dialog box for the game loser.
+    - Input: none
+    - Return: none
+    ----------*/
     private void gameOver() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.mainActivity_gameOver_alert);
@@ -93,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    /*----------
+    - Description: Creates a dialog box which prompts a player for their name.
+    - Input: none
+    - Return: none
+    ----------*/
     private void promptForName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.mainActivity_promptForName_alert);
@@ -118,8 +144,11 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-
-
+    /*----------
+    - Description: Creates a new event Connect request event, and connects to the server using event reactor
+    - Input: none
+    - Return: none
+    ----------*/
     private void connectToServer() {
         new Thread(new Runnable() {
             @Override
@@ -136,7 +165,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /*----------
+    - Description: Moves the player into the room they selected.
+    - Input: position
+    - Return: none
+    ----------*/
     private void listItemClicked(int position) {
         String room = roomList.get(position);
         Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
@@ -146,14 +179,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /*----------
+    - Description: Sends a GET_ROOMS event to the server.
+    - Input: none
+    - Return: none
+    ----------*/
     public void connectedResponse() {
         Event event = new Event("GET_ROOMS");
         eventReactor.request(event);
     }
 
 
-
+    /*----------
+    - Description: Clears and updates the current list of rooms.
+    - Input: listOfRooms
+    - Return: none
+    ----------*/
     public void roomList(ArrayList<String> listOfRooms) {
         roomList.clear();
         roomList.addAll(listOfRooms);
@@ -166,13 +207,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    //Static instance of MainActivity
     public static MainActivity getInstance() {
         return instance;
     }
 
 
 
+    /*----------
+    - Description: Creates a dialog box that notifies user that feature selected is unavailable.
+    - Input: none
+    - Return: none
+    ----------*/
     private void FEATURE_UNAVAILABLE() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.FEATURE_UNAVAILABLE_ALERT);

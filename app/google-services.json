@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "14477185651",
+    "firebase_url": "https://killcam-ca2b1.firebaseio.com",
+    "project_id": "killcam-ca2b1",
+    "storage_bucket": "killcam-ca2b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14477185651:android:2a21c1d685eab17b",
+        "android_client_info": {
+          "package_name": "edu.carleton.COMP2601.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14477185651-2dkplslpbf06gdrkp5ek8hi2saksqo90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAznlG5JCQ2sDryoNYMSQhcMaMgfXSxw18"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

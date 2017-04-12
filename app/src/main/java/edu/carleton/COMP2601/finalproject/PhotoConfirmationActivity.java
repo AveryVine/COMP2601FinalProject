@@ -24,6 +24,10 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
 
     private EventReactor eventReactor;
 
+    /*----------
+    - Description: runs when the activity first boots up.
+                   - Initializes Image view, buttons, bitmaps and click-listeners.
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +75,11 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
         });
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == -1) {
@@ -87,6 +96,11 @@ public class PhotoConfirmationActivity extends AppCompatActivity {
         }
     }
 
+    /*----------
+    - Description: Creates a dialog box that notifies user that feature selected is unavailable.
+    - Input: none
+    - Return: none
+    ----------*/
     private void FEATURE_UNAVAILABLE() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.FEATURE_UNAVAILABLE_ALERT);

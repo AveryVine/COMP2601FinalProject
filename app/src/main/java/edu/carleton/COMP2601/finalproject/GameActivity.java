@@ -45,6 +45,12 @@ public class GameActivity extends AppCompatActivity {
 
     private EventReactor eventReactor;
 
+    /*----------
+    - Description: runs when the activity first boots up.
+                   - Sets the activity_game view
+                   - Initializes static instance, client and every UI button on the view
+                   - Sets click-listeners for each button
+    ----------*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,6 +197,11 @@ public class GameActivity extends AppCompatActivity {
 //        client.onResume();
     }
 
+    /*----------
+    - Description: Called when the subsequent activity returns. Calls the corresponding function.
+    - Input: requestCode, resultCode, data
+    - Return: none
+    ----------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == -1) {
@@ -207,9 +218,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-
-
+    /*----------
+    - Description: Deposits the given amount of cash to the client's account
+    - Input: final deposit
+    - Return: none
+    ----------*/
     public void cashDeposit(final int deposit) {
         client.depositCash(deposit);
         updateCashTitle();
@@ -221,6 +234,11 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    /*----------
+    - Description: Updates client's Cash Title UI
+    - Input: none
+    - Return: none
+    ----------*/
     public void updateCashTitle() {
         runOnUiThread(new Runnable() {
             @Override
@@ -230,10 +248,17 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    //Getter for client's current location
     public Location getClientLocation() {
         return client.getCurrentLocation();
     }
 
+
+    /*----------
+    - Description: Sends the client location to the server (SEND_LOCATION event)
+    - Input: id, activity
+    - Return: none
+    ----------*/
     public void sendClientLocation(String id, String activity) {
         Event event = new Event("SEND_LOCATION");
         event.put(Fields.ACTIVITY, activity);
@@ -246,6 +271,11 @@ public class GameActivity extends AppCompatActivity {
         p.recycle();
     }
 
+    /*----------
+    - Description: Sets bytes and starts the PhotoConfirmationActivity activity.
+    - Input: sender, bytes
+    - Return: none
+    ----------*/
     public void photoReceived(String sender, byte[] bytes) {
         this.bytes = bytes;
         Intent intent = new Intent(getApplicationContext(), PhotoConfirmationActivity.class);
@@ -253,6 +283,11 @@ public class GameActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    /*----------
+    - Description: Sets bytes and starts the PhotoResponseActivity activity.
+    - Input: sender, bytes, success
+    - Return: none
+    ----------*/
     public void photoResponseReceived(String sender, byte[] bytes, boolean success) {
         this.bytes = bytes;
         Intent intent = new Intent(getApplicationContext(), PhotoResponseActivity.class);
@@ -261,18 +296,21 @@ public class GameActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    //Getter for bytes array
     public byte[] getImageBytes() {
         return bytes;
     }
 
-
-
+    //Static instance of GameActivity class
     public static GameActivity getInstance() {
         return instance;
     }
 
-
-
+    /*----------
+    - Description: Creates a dialog box that notifies user that feature selected is unavailable.
+    - Input: none
+    - Return: none
+    ----------*/
     private void FEATURE_UNAVAILABLE() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.FEATURE_UNAVAILABLE_ALERT);
@@ -285,8 +323,11 @@ public class GameActivity extends AppCompatActivity {
         builder.show();
     }
 
-
-
+    /*----------
+    - Description: Creates a toast for user if a certain permission has not been granted
+    - Input: requestCode, permissions, grantResults
+    - Return: none
+    ----------*/
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
